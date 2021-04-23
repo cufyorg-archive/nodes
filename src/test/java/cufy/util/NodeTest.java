@@ -1,12 +1,16 @@
 package cufy.util;
 
+import cufy.util.AbstractNode.SimpleLink;
 import cufy.util.Node.Key;
+import cufy.util.Node.Link;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.Objects;
 
-@SuppressWarnings("JUnitTestNG")
+import static org.junit.Assert.*;
+
+@SuppressWarnings({"JUnitTestNG", "MigrateAssertToMatcherAssert"})
 public class NodeTest {
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
@@ -54,6 +58,100 @@ public class NodeTest {
 		southWest.putNode(Compass.NORTH, westSouth);
 
 		int i = 0;
+	}
+
+	@Test
+	public void opposites_put() {
+		Node<String> node = new HashNode<>("C");
+
+		//put value
+		node.put(Compass.SOUTH, "S");
+
+		assertSame(
+				"South was mapped to north?",
+				node,
+				node.getNode(Compass.SOUTH)
+					.getNode(Compass.NORTH)
+		);
+
+		node.clear();
+
+		//put node
+		node.putNode(Compass.SOUTH, new HashNode<>("S"));
+
+		assertSame(
+				"South was mapped to north?",
+				node,
+				node.getNode(Compass.SOUTH)
+					.getNode(Compass.NORTH)
+		);
+
+		node.clear();
+
+		//put link
+		Link<String> link = new SimpleLink<>(Compass.NORTH);
+		node.putLink(link);
+		new HashNode<>("S").putLink(link.getOpposite());
+
+		assertSame(
+				"South was mapped to north?",
+				node,
+				node.getNode(Compass.SOUTH)
+					.getNode(Compass.NORTH)
+		);
+
+		node.clear();
+	}
+
+	@Test
+	public void opposites_contains() {
+		Node<String> node = new HashNode<>("C");
+		Node<String> other = new HashNode<>("S");
+		Link<String> link = new SimpleLink<>(Compass.NORTH);
+
+		node.putLink(link);
+		other.putLink(link.getOpposite());
+
+		//containsKey
+		assertTrue(
+				"containsKey is looking at the wrong side",
+				node.containsKey(Compass.SOUTH)
+		);
+		assertFalse(
+				"containsKey is seeing the mirror",
+				node.containsKey(Compass.NORTH)
+		);
+
+		//containsLink
+		assertTrue(
+				"containsLink is looking at the wrong side",
+				node.containsLink(link)
+		);
+		assertFalse(
+				"containsLink is NOT seeing the mirror",
+				node.containsLink(link.getOpposite())
+		);
+
+		//containsNode
+		assertTrue(
+				"containsNode is looking at the wrong side",
+				node.containsNode(other)
+		);
+		assertFalse(
+				"containsNode is seeing the mirror",
+				node.containsNode(node)
+		);
+
+		//containValue
+		assertTrue(
+				"containsValue is looking at the wrong side",
+				node.containsValue("S")
+		);
+		assertFalse(
+				"containsValue is seeing the mirror",
+				node.containsValue("C")
+		);
+
 	}
 
 	public enum Compass implements Key {

@@ -25,15 +25,15 @@ import java.util.*;
  * minimized the effort required to implement this interface.
  * <br>
  * To Implement an unmodifiable node, the programmer needs only to extend this class and
- * provide an implementation for {@link #getValue()} and {@link #setValue(Object)} methods
- * which are accessors for the value of the node additionally the {@link #linkSet()}
- * method, which returns a set-view of the links pointing to the node. Typically, the
- * returned set will, in turn, be implemented atop {@link AbstractSet}. This set should
- * not support the {@link Set#add add} or {@link Set#remove remove} methods, and its
- * iterator should not support the {@code remove} method.
+ * provide an implementation for {@link #get()} and {@link #set(Object)} methods which are
+ * accessors for the value of the node additionally the {@link #linkSet()} method, which
+ * returns a set-view of the links pointing to the node. Typically, the returned set will,
+ * in turn, be implemented atop {@link AbstractSet}. This set should not support the
+ * {@link Set#add add} or {@link Set#remove remove} methods, and its iterator should not
+ * support the {@code remove} method.
  * <br>
  * To implement a modifiable node, the programmer must additionally override this class's
- * {@link #putLink(Link)}, {@link #putNode(Key, Node)}, {@link #putValue(Key, V)} methods
+ * {@link #putLink(Link)}, {@link #putNode(Key, Node)}, {@link #put(Key, V)} methods
  * (which otherwise throws an {@link UnsupportedOperationException}), and the iterator
  * returned by {@code linkSet().iterator()} must additionally implement its {@code remove}
  * method.
@@ -100,7 +100,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.getValue()) ^
+		return Objects.hashCode(this.get()) ^
 			   this.linkSet().size();
 	}
 
@@ -114,7 +114,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	@NotNull
 	@Override
 	public String toString() {
-		return "{:" + this.getValue() + "}";
+		return "{:" + this.get() + "}";
 	}
 
 	/**
@@ -195,14 +195,15 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * @implSpec this implementation iterates over {@code linkSet()} searching for a
 	 * 		link with the opposite of the given {@code key}. If such a link is found, the
 	 * 		link with be removed from the collection (and this node) with the iterator's
-	 *        {@code remove} operation, and the removed link will be returned. If the iteration
-	 * 		terminates without finding such a link, {@code null} is returned. Note that this
-	 * 		implementation requires linear time in the size of the node.
+	 *        {@code remove} operation, and the the value of the node of the opposite of the
+	 * 		removed link will be returned. If the iteration terminates without finding such a
+	 * 		link, {@code null} is returned. Note that this implementation requires linear
+	 * 		time in the size of the node.
 	 * @since 0.0.1 ~2021.04.23
 	 */
 	@Nullable
 	@Override
-	public Link<V> removeKey(@NotNull /*opposite*/ Key key) {
+	public V remove(@NotNull /*opposite*/ Key key) {
 		Objects.requireNonNull(key, "key");
 		Key opposite = key.opposite();
 		Iterator<Link<V>> i = this.linkSet().iterator();
@@ -211,7 +212,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 			if (l.getKey().equals(opposite)) {
 				i.remove();
-				return l;
+				return l.getOpposite().getValue();
 			}
 		}
 
@@ -225,7 +226,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * 		The subclass's iterator method returns a "wrapper object" over this node's {@code
 	 * 		linkSet()} iterator. The {@code size} method delegates to this node's {@code
 	 * 		size} method and the {@code contains} method delegates to this node's {@link
-	 *        #containsKey} method (with the specified key being flipped).
+	 *        #containsKey} method.
 	 * 		<br>
 	 * 		The set is created the first time this method is called, and returned in response
 	 * 		to all subsequent calls. No synchronization is performed, so there is a slight
@@ -246,7 +247,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 				@Override
 				public boolean contains(Object object) {
-					return AbstractNode.this.containsKey(((Key) object).opposite());
+					return AbstractNode.this.containsKey((Key) object);
 				}
 
 				@Override
@@ -265,7 +266,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 						@Override
 						public Key next() {
-							return i.next().getKey();
+							return i.next().getOpposite().getKey();
 						}
 
 						@Override
@@ -317,11 +318,10 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 */
 	@Nullable
 	@Override
-	public Link<V> getLink(@NotNull /*opposite*/ Key key) {
+	public Link<V> getLink(@NotNull Key key) {
 		Objects.requireNonNull(key, "key");
-		Key opposite = key.opposite();
 		for (Link<V> l : this.linkSet())
-			if (l.getKey().equals(opposite))
+			if (l.getKey().equals(key))
 				return l;
 		return null;
 	}
@@ -385,7 +385,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	public boolean containsNode(@NotNull Node<V> node) {
 		Objects.requireNonNull(node, "node");
 		for (Link<V> l : this.linkSet())
-			if (l.getNode() == node)
+			if (l.getOpposite().getNode() == node)
 				return true;
 		return false;
 	}
@@ -407,7 +407,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 		Key opposite = key.opposite();
 		for (Link<V> l : this.linkSet())
 			if (l.getKey().equals(opposite))
-				return l.getNode();
+				return l.getOpposite().getNode();
 		return null;
 	}
 
@@ -430,7 +430,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 		while (i.hasNext()) {
 			Link<V> l = i.next();
 
-			if (l.getNode() == node) {
+			if (l.getOpposite().getNode() == node) {
 				i.remove();
 				b = true;
 			}
@@ -498,7 +498,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 						@Override
 						public Node<V> next() {
-							return i.next().getNode();
+							return i.next().getOpposite().getNode();
 						}
 
 						@Override
@@ -532,12 +532,9 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 */
 	@Override
 	public boolean containsValue(@Nullable V value) {
-		for (Link<V> l : this.linkSet()) {
-			Node<V> node = l.getNode();
-			if (node != null)
-				if (Objects.equals(node.getValue(), value))
-					return true;
-		}
+		for (Link<V> l : this.linkSet())
+			if (Objects.equals(l.getOpposite().getValue(), value))
+				return true;
 		return false;
 	}
 
@@ -553,12 +550,12 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 */
 	@Nullable
 	@Override
-	public V getValue(@NotNull /*opposite*/ Key key) {
+	public V get(@NotNull /*opposite*/ Key key) {
 		Objects.requireNonNull(key, "key");
 		Key opposite = key.opposite();
 		for (Link<V> l : this.linkSet())
 			if (l.getKey().equals(opposite))
-				return l.getValue();
+				return l.getOpposite().getValue();
 		return null;
 	}
 
@@ -581,7 +578,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 			while (i.hasNext()) {
 				Link<V> l = i.next();
 
-				if (l.getValue() == null) {
+				if (l.getOpposite().getValue() == null) {
 					i.remove();
 					b = true;
 				}
@@ -590,7 +587,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 			while (i.hasNext()) {
 				Link<V> l = i.next();
 
-				if (value.equals(l.getValue())) {
+				if (value.equals(l.getOpposite().getValue())) {
 					i.remove();
 					b = true;
 				}
@@ -607,7 +604,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 */
 	@Nullable
 	@Override
-	public V putValue(@NotNull /*opposite*/ Key key, @Nullable V value) {
+	public V put(@NotNull /*opposite*/ Key key, @Nullable V value) {
 		throw new UnsupportedOperationException("put");
 	}
 
@@ -658,8 +655,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 						@Override
 						public V next() {
-							Node<V> node = i.next().getNode();
-							return node == null ? null : node.getValue();
+							return i.next().getOpposite().getValue();
 						}
 
 						@Override

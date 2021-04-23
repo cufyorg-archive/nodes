@@ -213,7 +213,7 @@ public class HashNode<V> extends AbstractNode<V> {
 
 	@Nullable
 	@Override
-	public V putValue(@NotNull /*opposite*/ Key key, @Nullable V value) {
+	public V put(@NotNull /*opposite*/ Key key, @Nullable V value) {
 		Objects.requireNonNull(key, "key");
 		Key opposite = key.opposite();
 
@@ -245,7 +245,7 @@ public class HashNode<V> extends AbstractNode<V> {
 		}
 
 		//set the value to the node
-		return n.setValue(value);
+		return n.set(value);
 		/*
 		No worries about `fail->no changes` contract.
 		If the node was created by this node. It is a HashNode so it will accept any value and any link.
@@ -257,13 +257,13 @@ public class HashNode<V> extends AbstractNode<V> {
 
 	@Nullable
 	@Override
-	public V getValue() {
+	public V get() {
 		return this.value;
 	}
 
 	@Nullable
 	@Override
-	public V setValue(@Nullable V value) {
+	public V set(@Nullable V value) {
 		V v = this.value;
 		this.value = value;
 		return v;

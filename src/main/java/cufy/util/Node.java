@@ -172,7 +172,7 @@ public interface Node<V> {
 	@Contract(pure = true)
 	int size();
 
-	// Keys
+	// Keys (OPPOSITE)
 
 	/**
 	 * Check if this node has a link with the given {@code key}.
@@ -189,8 +189,8 @@ public interface Node<V> {
 	 * Remove the link with the opposite of the given {@code key} from this node.
 	 *
 	 * @param key the opposite key of the link to be removed
-	 * @return the link with the opposite of the given {@code key} that has been removed.
-	 * 		Or {@code null} if no link was removed.
+	 * @return the value of the node of the opposite of the link with the opposite of the
+	 * 		given {@code key} that has been removed. Or {@code null} if no link was removed.
 	 * @throws NullPointerException          if the given {@code key} is null.
 	 * @throws UnsupportedOperationException if this node refuses to remove the link with
 	 *                                       the opposite of the given {@code key}.
@@ -198,10 +198,10 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(mutates = "this")
-	Link<V> removeKey(@NotNull /*opposite*/ Key key);
+	V remove(@NotNull /*opposite*/ Key key);
 
 	/**
-	 * A non-null view of the keys of the links pointing to this node.
+	 * A non-null view of the opposite keys of the links pointing to this node.
 	 * <br>
 	 * The returned set is a reflection of this node. So, any changes to this node will be
 	 * reflected in the returned set and vice versa.
@@ -218,14 +218,14 @@ public interface Node<V> {
 	 * when used after a modification is applied to this node after the creation of that
 	 * iterator.
 	 *
-	 * @return a view of the keys in this node.
+	 * @return a view of the opposites of the keys in this node.
 	 * @since 0.0.1 ~2021.04.22
 	 */
 	@NotNull
 	@Contract(pure = true)
 	Set<Key> keySet();
 
-	// Links
+	// Links (STRAIT)
 
 	/**
 	 * Check if this node has the given {@code link} (same reference).
@@ -239,18 +239,17 @@ public interface Node<V> {
 	boolean containsLink(@NotNull Link<V> link);
 
 	/**
-	 * Get the link pointing to this node with the opposite of the given {@code key}.
+	 * Get the link pointing to this node with the given {@code key}.
 	 *
-	 * @param key the opposite key of the link.
-	 * @return the link pointing to this node with the opposite of the given {@code key}.
-	 * 		Or {@code null} if no link in this node has the opposite of the given {@code
-	 * 		key}.
+	 * @param key the key of the link.
+	 * @return the link pointing to this node with the given {@code key}. Or {@code null}
+	 * 		if no link in this node has the given {@code key}.
 	 * @throws NullPointerException if the given {@code key} is null.
 	 * @since 0.0.1 ~2021.04.20
 	 */
 	@Nullable
 	@Contract(pure = true)
-	Link<V> getLink(@NotNull /*opposite*/ Key key);
+	Link<V> getLink(@NotNull Key key);
 
 	/**
 	 * Remove the given {@code link} from this node.
@@ -365,7 +364,7 @@ public interface Node<V> {
 	@Contract(pure = true)
 	Set<Link<V>> linkSet();
 
-	// Nodes
+	// Nodes (OPPOSITE)
 
 	/**
 	 * Check if this node has a relation (link) between it an the given {@code node}.
@@ -473,7 +472,7 @@ public interface Node<V> {
 	@Contract(pure = true)
 	Collection<Node<V>> nodes();
 
-	// Values
+	// Values (OPPOSITE)
 
 	/**
 	 * Check if this node has a relation (link) between it and a node with the given
@@ -501,11 +500,10 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(pure = true)
-	V getValue(@NotNull /*opposite*/ Key key);
+	V get(@NotNull /*opposite*/ Key key);
 
 	/**
-	 * Remove all the links pointing to this node and a node with the given {@code
-	 * value}.
+	 * Remove all the links pointing to this node with the given {@code value}.
 	 * <br>
 	 * The removal will only occur in this node. So, the links will not be removed from
 	 * the nodes with the given {@code value}.
@@ -559,7 +557,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(mutates = "this")
-	V putValue(@NotNull /*opposite*/ Key key, @Nullable V value);
+	V put(@NotNull /*opposite*/ Key key, @Nullable V value);
 
 	/**
 	 * A nullable view of the values of the nodes related to this node.
@@ -596,7 +594,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(pure = true)
-	V getValue();
+	V get();
 
 	/**
 	 * Set the value of this node to be the given {@code value}.
@@ -614,7 +612,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(mutates = "this")
-	V setValue(@Nullable V value);
+	V set(@Nullable V value);
 
 	// Interfaces
 
@@ -879,7 +877,7 @@ public interface Node<V> {
 		@Contract(pure = true)
 		default V getValue() {
 			Node<V> node = this.getNode();
-			return node == null ? null : node.getValue();
+			return node == null ? null : node.get();
 		}
 
 		/**
@@ -904,7 +902,7 @@ public interface Node<V> {
 			Node<V> node = this.getNode();
 			if (node == null)
 				throw new IllegalStateException("setValue");
-			return node.setValue(value);
+			return node.set(value);
 		}
 	}
 }

@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+group 'org.cufy'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    implementation 'org.jetbrains:annotations:20.1.0'
+}

@@ -935,6 +935,7 @@
           <option value="AccessingNonPublicFieldOfAnotherObject" />
           <option value="NonFinalClone,UseOfClone,AccessingNonPublicFieldOfAnotherObject" />
           <option value="ClassHasNoToStringMethod" />
+          <option value="JUnitTestMethodWithNoAssertions" />
         </list>
       </option>
     </inspection_tool>

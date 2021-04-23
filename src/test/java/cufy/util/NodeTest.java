@@ -6,7 +6,9 @@ import org.junit.Test;
 
 import java.util.Objects;
 
+@SuppressWarnings("JUnitTestNG")
 public class NodeTest {
+	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
 	public void test0() {
 		Node<String> north = new HashNode<>("N");

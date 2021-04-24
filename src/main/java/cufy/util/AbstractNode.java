@@ -800,17 +800,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 		@Override
 		public boolean equals(@Nullable Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof Link) {
-				Link link = (Link) object;
-
-				//noinspection NonFinalFieldReferenceInEquals
-				return this.node == link.getNode() &&
-					   Objects.equals(this.key, link.getKey());
-			}
-
-			return false;
+			return object == this;
 		}
 
 		@Override

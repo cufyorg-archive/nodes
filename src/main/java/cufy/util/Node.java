@@ -717,9 +717,7 @@ public interface Node<V> {
 		/**
 		 * Determine if the given {@code object} equals this link.
 		 * <br>
-		 * An object equals a link if that object is a link and has an {@link
-		 * Object#equals(Object) equal} {@link #getKey() key} and the same {@link
-		 * #getNode() node} as that link.
+		 * An object equals a link if that object is the same reference as that link.
 		 *
 		 * @param object the object to be checked.
 		 * @return true, if the given {@code object} equals this.

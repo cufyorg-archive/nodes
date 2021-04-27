@@ -507,43 +507,6 @@ public abstract class AbstractNode<V> implements Node<V> {
 		return null;
 	}
 
-	//	/**
-	//	 * {@inheritDoc}
-	//	 *
-	//	 * @implSpec this implementation iterates over {@code linkSet()} searching for links
-	//	 * 		with its opposite pointing to a node with the given {@code value}. If any link
-	//	 * 		was found, the links will be removed from the collection (and this node) with the
-	//	 * 		iterator's {@code remove} operation, and {@code true} will be returned. If the
-	//	 * 		iteration terminates without finding any link, {@code false} is returned. Note
-	//	 * 		that this implementation requires linear time in the size of the node.
-	//	 * @since 0.0.1 ~2021.04.23
-	//	 */
-	//	@Override
-	//	public boolean removeValue(@Nullable V value) {
-	//		Iterator<Link<V>> i = this.linkSet().iterator();
-	//		boolean b = false;
-	//		if (value == null)
-	//			while (i.hasNext()) {
-	//				Link<V> l = i.next();
-	//
-	//				if (l.getOpposite().getValue() == null) {
-	//					i.remove();
-	//					b = true;
-	//				}
-	//			}
-	//		else
-	//			while (i.hasNext()) {
-	//				Link<V> l = i.next();
-	//
-	//				if (value.equals(l.getOpposite().getValue())) {
-	//					i.remove();
-	//					b = true;
-	//				}
-	//			}
-	//
-	//		return b;
-	//	}
-
 	/**
 	 * {@inheritDoc}
 	 *

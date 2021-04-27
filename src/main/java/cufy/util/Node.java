@@ -62,6 +62,17 @@ import java.util.Set;
  *     key parameter.
  * </div>
  * <div style="padding: 10px">
+ *     <h3>One to Many / Many to Many relations</h3>
+ *     It is a bit tricky to support one-to-many and many-to-many relations. I deeply
+ *     thought about hardly integrate it in the interface. But, if we need to hardly
+ *     integrate it in the interface, we have to either lose the strict relationships
+ *     feature or make the interface more complex (which is a problem we already have).
+ *     So, to support one-to-many and many-to-many relations, you need to depend on the
+ *     {@link Key}s. The keys of the same class that support such relations might make
+ *     their {@link Key#equals(Object)} a reference based equation. This way, a node might
+ *     have multiple nodes relating to it with the same key class but with an unequal keys.
+ * </div>
+ * <div style="padding: 10px">
  *     <h3>Viewing Points</h3>
  *     Aside from the actual data structure (since it is implementation specific) a node
  *     has many viewing points (described below):
@@ -570,23 +581,6 @@ public interface Node<V> {
 	@Nullable
 	@Contract(mutates = "this")
 	V remove(@NotNull /*opposite*/ Key key);
-
-	//	/**
-	//	 * Remove all the links pointing to this node with the given {@code value}.
-	//	 * <br>
-	//	 * The removal will only occur in this node. So, the links will not be removed from
-	//	 * the nodes with the given {@code value}.
-	//	 *
-	//	 * @param value the value of the nodes to be removed.
-	//	 * @return true, if this node changed due to this method call.
-	//	 * @throws UnsupportedOperationException if this node refuses to remove a link between
-	//	 *                                       it and the nodes with the given {@code
-	//	 *                                       value}.
-	//	 * @since 0.0.1 ~2021.04.23
-	//	 */
-	//	@Deprecated
-	//	@Contract(mutates = "this")
-	//	boolean removeValue(@Nullable V value);
 
 	/**
 	 * A non-null view of the opposite keys of the links pointing to this node.

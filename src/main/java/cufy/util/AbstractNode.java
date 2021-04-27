@@ -722,6 +722,13 @@ public abstract class AbstractNode<V> implements Node<V> {
 		 */
 		@NotNull
 		protected final Key opposite;
+		/**
+		 * The string to be returned for {@link #toString}.
+		 *
+		 * @since 0.0.1 ~2021.04.28
+		 */
+		@NotNull
+		protected final String toString;
 
 		/**
 		 * Construct a new key.
@@ -730,6 +737,39 @@ public abstract class AbstractNode<V> implements Node<V> {
 		 */
 		public SimpleKey() {
 			this.opposite = new SimpleKey(this);
+			this.toString = Integer.toHexString(System.identityHashCode(this));
+		}
+
+		/**
+		 * Construct a new key.
+		 *
+		 * @param toString the string returned for the {@code toString} method of the
+		 *                 constructed key.
+		 * @throws NullPointerException if the given {@code toString} is null.
+		 * @since 0.0.1 ~2021.04.28
+		 */
+		public SimpleKey(@NotNull String toString) {
+			Objects.requireNonNull(toString, "toString");
+			this.opposite = new SimpleKey(this);
+			this.toString = toString;
+		}
+
+		/**
+		 * Construct a new key.
+		 *
+		 * @param toString         the string returned for the {@code toString} method of
+		 *                         the constructed key.
+		 * @param oppositeToString the string returned for the {@code toString} method of
+		 *                         the opposite key of the constructed key.
+		 * @throws NullPointerException if the given {@code toString} or {@code
+		 *                              oppositeToString} is null.
+		 * @since 0.0.1 ~2021.04.28
+		 */
+		public SimpleKey(@NotNull String toString, @NotNull String oppositeToString) {
+			Objects.requireNonNull(toString, "toString");
+			Objects.requireNonNull(oppositeToString, "oppositeToString");
+			this.opposite = new SimpleKey(this, oppositeToString);
+			this.toString = toString;
 		}
 
 		/**
@@ -742,6 +782,23 @@ public abstract class AbstractNode<V> implements Node<V> {
 		protected SimpleKey(@NotNull Key opposite) {
 			Objects.requireNonNull(opposite, "opposite");
 			this.opposite = opposite;
+			this.toString = Integer.toHexString(System.identityHashCode(this));
+		}
+
+		/**
+		 * An internal constructor to construct an opposite key.
+		 *
+		 * @param opposite the opposite key.
+		 * @param toString the string returned for the {@code toString} method of the
+		 *                 constructed key.
+		 * @throws NullPointerException if the given {@code opposite} is null.
+		 * @since 0.0.1 ~2021.04.22
+		 */
+		protected SimpleKey(@NotNull Key opposite, @NotNull String toString) {
+			Objects.requireNonNull(opposite, "opposite");
+			Objects.requireNonNull(toString, "toString");
+			this.opposite = opposite;
+			this.toString = toString;
 		}
 
 		@NotNull
@@ -757,13 +814,13 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 		@Override
 		public int hashCode() {
-			return System.identityHashCode(this);
+			return this.toString.hashCode();
 		}
 
 		@NotNull
 		@Override
 		public String toString() {
-			return Integer.toHexString(System.identityHashCode(this));
+			return this.toString;
 		}
 	}
 

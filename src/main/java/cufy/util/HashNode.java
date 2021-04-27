@@ -37,7 +37,6 @@ public class HashNode<V> extends AbstractNode<V> {
 	 */
 	@NotNull
 	protected final Map<Key, Link<V>> map = new HashMap<>();
-
 	/**
 	 * A lazily initialized link set view accessing the links pointing to this node.
 	 *
@@ -45,7 +44,6 @@ public class HashNode<V> extends AbstractNode<V> {
 	 */
 	@Nullable
 	protected Set<Link<V>> linkSet;
-
 	/**
 	 * The currently set value of this node.
 	 *
@@ -71,6 +69,22 @@ public class HashNode<V> extends AbstractNode<V> {
 	 */
 	public HashNode(@Nullable V value) {
 		this.value = value;
+	}
+
+	// Value
+
+	@Nullable
+	@Override
+	public V get() {
+		return this.value;
+	}
+
+	@Nullable
+	@Override
+	public V set(@Nullable V value) {
+		V v = this.value;
+		this.value = value;
+		return v;
 	}
 
 	// Links
@@ -209,7 +223,7 @@ public class HashNode<V> extends AbstractNode<V> {
 		return null;
 	}
 
-	// Values
+	// Map
 
 	@Nullable
 	@Override
@@ -251,21 +265,5 @@ public class HashNode<V> extends AbstractNode<V> {
 		If the node was created by this node. It is a HashNode so it will accept any value and any link.
 		Otherwise, no link nor node will be changed. Since `l` and `n` will not be null anyway!
 		*/
-	}
-
-	// Value
-
-	@Nullable
-	@Override
-	public V get() {
-		return this.value;
-	}
-
-	@Nullable
-	@Override
-	public V set(@Nullable V value) {
-		V v = this.value;
-		this.value = value;
-		return v;
 	}
 }

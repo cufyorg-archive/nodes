@@ -52,13 +52,14 @@ import java.util.Set;
  * </div>
  * <div style="padding: 10px">
  *     <h3>Opposite Keys</h3>
- *     The Node interface provides the main interface functions that accept keys with a
- *     flipped behaviour. Like, when checking if a key is in a node. The check will be
- *     performed on the opposite of that key. This way, the user will not be confused
- *     by the node's side links and the relatives side of the links. For example, calling
- *     {@code node.containsKey(LEFT)} will check if this node has a node left to it
- *     instead of checking if the node is on the left of another node. You will see a
- *     comment containing {@code opposite} before an opposite key parameter.
+ *     Aside from link-related operations, the Node interface provides the main interface
+ *     functions that accept keys with a flipped behaviour. Like, when checking if a key
+ *     is in a node. The check will be performed on the opposite of that key. This way,
+ *     the user will not be confused by the node's side links and the relatives side of
+ *     the links. For example, calling {@code node.containsKey(LEFT)} will check if this
+ *     node has a node left to it instead of checking if the node is on the left of
+ *     another node. You will see a comment containing {@code opposite} before an opposite
+ *     key parameter.
  * </div>
  * <div style="padding: 10px">
  *     <h3>Viewing Points</h3>
@@ -70,20 +71,36 @@ import java.util.Set;
  *             The view of the node itself. The value of the node.
  *         </li>
  *         <li>
- *             <b>Keys</b>
- *             An additional viewing point viewing the keys the node has.
- *         </li>
- *         <li>
  *             <b>Links</b>
  *             The most important viewing point viewing the links pointing to the node.
  *         </li>
  *         <li>
  *             <b>Nodes</b>
- *             An additional viewing point viewing the nodes relating to the node.
+ *             An additional flipped viewing point viewing the nodes relating to the node.
+ *             This view point is good to access the relationship between the node and a
+ *             specific node regardless of the kind of the relationship.
+ *         </li>
+ *         <li>
+ *             <b>Keys</b>
+ *             An additional flipped viewing point viewing the opposite of the keys the
+ *             node has.
+ *             This view point is to treat the node as a Map with the keys being the
+ *             opposite of the keys the node has.
  *         </li>
  *         <li>
  *             <b>Values</b>
- *             A shortcut viewing point viewing the values of the other nodes relating to the node.
+ *             An additional flipped viewing point viewing the values of the other nodes
+ *             relating to the node.
+ *             This view point is to treat the node as a Map with the values being the
+ *             values of the nodes relating to the node.
+ *         </li>
+ *         <li>
+ *             <b>Entries</b>
+ *             An additional flipped viewing point viewing a wrapper objects wrapping the
+ *             opposite links of the links the node has.
+ *             This view point is to treat the node as a Map with the keys being the keys
+ *             of the links to the side of the nodes relating to the node and the values
+ *             being the values of the corresponding nodes.
  *         </li>
  *     </ul>
  * </div>
@@ -94,6 +111,16 @@ import java.util.Set;
  * @since 0.0.1 ~2021.04.18
  */
 public interface Node<V> {
+	/*
+	# Map have, Node does not
+	- putAll(Node) ~ removes all the links on the put node
+	- defaults? ~ too lazy -_-"
+
+	# Q/A
+	Q- Why not extend Map?
+	A- What about `equals`, `hashCode()` or even `toString()` ?
+	 */
+
 	// Object
 
 	/**
@@ -136,96 +163,37 @@ public interface Node<V> {
 	@Override
 	String toString();
 
-	// Collection
+	// Value
 
 	/**
-	 * Remove all the relations of this node.
-	 * <br>
-	 * The removal will only occur on this node. So, the links will not be removed from
-	 * the other nodes. In other words, the other nodes will retain the links pointing to
-	 * this node.
+	 * Return the value of this node.
 	 *
+	 * @return the value of this node.
 	 * @since 0.0.1 ~2021.04.22
 	 */
-	@Contract(mutates = "this")
-	void clear();
-
-	/**
-	 * Returns {@code true} if this node has no relatives.
-	 * <br>
-	 * Equivalent to {@code node.linkSet().isEmpty()}
-	 *
-	 * @return true, if this node has no relatives.
-	 * @since 0.0.1 ~2021.04.22
-	 */
+	@Nullable
 	@Contract(pure = true)
-	boolean isEmpty();
+	V get();
 
 	/**
-	 * The number of direct relatives this node has.
-	 * <br>
-	 * Equivalent to {@code node.linkSet().size()}.
+	 * Set the value of this node to be the given {@code value}.
 	 *
-	 * @return the number of direct relatives to this node.
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@Contract(pure = true)
-	int size();
-
-	// Keys (OPPOSITE)
-
-	/**
-	 * Check if this node has a link with the given {@code key}.
-	 *
-	 * @param key the key of the link to be checked.
-	 * @return true, if this node has a link with the given {@code key} pointing to it.
-	 * @throws NullPointerException if the given {@code key} is null.
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@Contract(pure = true)
-	boolean containsKey(@NotNull /*opposite*/ Key key);
-
-	/**
-	 * Remove the link with the opposite of the given {@code key} from this node.
-	 *
-	 * @param key the opposite key of the link to be removed
-	 * @return the value of the node of the opposite of the link with the opposite of the
-	 * 		given {@code key} that has been removed. Or {@code null} if no link was removed.
-	 * @throws NullPointerException          if the given {@code key} is null.
-	 * @throws UnsupportedOperationException if this node refuses to remove the link with
-	 *                                       the opposite of the given {@code key}.
+	 * @param value the new value of this node.
+	 * @return the previous value of this node.
+	 * @throws NullPointerException          if the given {@code value} is null and this
+	 *                                       node does not support null value.
+	 * @throws IllegalArgumentException      if this node rejected the given {@code
+	 *                                       value}.
+	 * @throws ClassCastException            if the given {@code value} is of an
+	 *                                       inappropriate type for this node.
+	 * @throws UnsupportedOperationException if this node refused to change its value.
 	 * @since 0.0.1 ~2021.04.22
 	 */
 	@Nullable
 	@Contract(mutates = "this")
-	V remove(@NotNull /*opposite*/ Key key);
+	V set(@Nullable V value);
 
-	/**
-	 * A non-null view of the opposite keys of the links pointing to this node.
-	 * <br>
-	 * The returned set is a reflection of this node. So, any changes to this node will be
-	 * reflected in the returned set and vice versa.
-	 * <br>
-	 * The returned set will only permit {@code non-null} {@link Key} elements. So, any
-	 * operation like {@code contains} will fail when {@code null} or a non {@link Key} is
-	 * passed to it.
-	 * <br>
-	 * Additionally the returned set will not support the {@code add} and {@code addAll}
-	 * operation. But, the returned set will support the {@code remove} and {@code
-	 * removeAll} operations.
-	 * <br>
-	 * An iterator of the returned set will throw {@link ConcurrentModificationException}
-	 * when used after a modification is applied to this node after the creation of that
-	 * iterator.
-	 *
-	 * @return a view of the opposites of the keys in this node.
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@NotNull
-	@Contract(pure = true)
-	Set<Key> keySet();
-
-	// Links (STRAIT)
+	// Links
 
 	/**
 	 * Check if this node has the given {@code link} (same reference).
@@ -364,7 +332,7 @@ public interface Node<V> {
 	@Contract(pure = true)
 	Set<Link<V>> linkSet();
 
-	// Nodes (OPPOSITE)
+	// Nodes
 
 	/**
 	 * Check if this node has a relation (link) between it an the given {@code node}.
@@ -472,7 +440,52 @@ public interface Node<V> {
 	@Contract(pure = true)
 	Collection<Node<V>> nodes();
 
-	// Values (OPPOSITE)
+	// Map
+
+	/**
+	 * Remove all the relations of this node.
+	 * <br>
+	 * The removal will only occur on this node. So, the links will not be removed from
+	 * the other nodes. In other words, the other nodes will retain the links pointing to
+	 * this node.
+	 *
+	 * @since 0.0.1 ~2021.04.22
+	 */
+	@Contract(mutates = "this")
+	void clear();
+
+	/**
+	 * Returns {@code true} if this node has no relatives.
+	 * <br>
+	 * Equivalent to {@code node.linkSet().isEmpty()}
+	 *
+	 * @return true, if this node has no relatives.
+	 * @since 0.0.1 ~2021.04.22
+	 */
+	@Contract(pure = true)
+	boolean isEmpty();
+
+	/**
+	 * The number of direct relatives this node has.
+	 * <br>
+	 * Equivalent to {@code node.linkSet().size()}.
+	 *
+	 * @return the number of direct relatives to this node.
+	 * @since 0.0.1 ~2021.04.22
+	 */
+	@Contract(pure = true)
+	int size();
+
+	/**
+	 * Check if this node has a link with the given {@code key}.
+	 *
+	 * @param key the key of the link to be checked.
+	 * @return true, if this node has a link with the given {@code key} pointing to it.
+	 * @throws NullPointerException if the given {@code key} is null.
+	 * @since 0.0.1 ~2021.04.22
+	 */
+	@Contract(pure = true)
+	boolean containsKey(@NotNull /*opposite*/ Key key);
 
 	/**
 	 * Check if this node has a relation (link) between it and a node with the given
@@ -501,22 +514,6 @@ public interface Node<V> {
 	@Nullable
 	@Contract(pure = true)
 	V get(@NotNull /*opposite*/ Key key);
-
-	/**
-	 * Remove all the links pointing to this node with the given {@code value}.
-	 * <br>
-	 * The removal will only occur in this node. So, the links will not be removed from
-	 * the nodes with the given {@code value}.
-	 *
-	 * @param value the value of the nodes to be removed.
-	 * @return true, if this node changed due to this method call.
-	 * @throws UnsupportedOperationException if this node refuses to remove a link between
-	 *                                       it and the nodes with the given {@code
-	 *                                       value}.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Contract(mutates = "this")
-	boolean removeValue(@Nullable V value);
 
 	/**
 	 * Create a new relation of the given {@code key} to a new node with the given {@code
@@ -560,6 +557,63 @@ public interface Node<V> {
 	V put(@NotNull /*opposite*/ Key key, @Nullable V value);
 
 	/**
+	 * Remove the link with the opposite of the given {@code key} from this node.
+	 *
+	 * @param key the opposite key of the link to be removed
+	 * @return the value of the node of the opposite of the link with the opposite of the
+	 * 		given {@code key} that has been removed. Or {@code null} if no link was removed.
+	 * @throws NullPointerException          if the given {@code key} is null.
+	 * @throws UnsupportedOperationException if this node refuses to remove the link with
+	 *                                       the opposite of the given {@code key}.
+	 * @since 0.0.1 ~2021.04.22
+	 */
+	@Nullable
+	@Contract(mutates = "this")
+	V remove(@NotNull /*opposite*/ Key key);
+
+	//	/**
+	//	 * Remove all the links pointing to this node with the given {@code value}.
+	//	 * <br>
+	//	 * The removal will only occur in this node. So, the links will not be removed from
+	//	 * the nodes with the given {@code value}.
+	//	 *
+	//	 * @param value the value of the nodes to be removed.
+	//	 * @return true, if this node changed due to this method call.
+	//	 * @throws UnsupportedOperationException if this node refuses to remove a link between
+	//	 *                                       it and the nodes with the given {@code
+	//	 *                                       value}.
+	//	 * @since 0.0.1 ~2021.04.23
+	//	 */
+	//	@Deprecated
+	//	@Contract(mutates = "this")
+	//	boolean removeValue(@Nullable V value);
+
+	/**
+	 * A non-null view of the opposite keys of the links pointing to this node.
+	 * <br>
+	 * The returned set is a reflection of this node. So, any changes to this node will be
+	 * reflected in the returned set and vice versa.
+	 * <br>
+	 * The returned set will only permit {@code non-null} {@link Key} elements. So, any
+	 * operation like {@code contains} will fail when {@code null} or a non {@link Key} is
+	 * passed to it.
+	 * <br>
+	 * Additionally the returned set will not support the {@code add} and {@code addAll}
+	 * operation. But, the returned set will support the {@code remove} and {@code
+	 * removeAll} operations.
+	 * <br>
+	 * An iterator of the returned set will throw {@link ConcurrentModificationException}
+	 * when used after a modification is applied to this node after the creation of that
+	 * iterator.
+	 *
+	 * @return a view of the opposites of the keys in this node.
+	 * @since 0.0.1 ~2021.04.22
+	 */
+	@NotNull
+	@Contract(pure = true)
+	Set<Key> keySet();
+
+	/**
 	 * A nullable view of the values of the nodes related to this node.
 	 * <br>
 	 * The returned collection is a reflection of this node. So, any changes to this node
@@ -584,35 +638,23 @@ public interface Node<V> {
 	@Contract(pure = true)
 	Collection<V> values();
 
-	// Value
-
 	/**
-	 * Return the value of this node.
+	 * Returns a {@link Set} view of the relation entries in this node. The set is backed
+	 * by the node, so changes to the node are reflected in the set, and vice-versa. If
+	 * the node modified while an iteration over the set is in progress (except through
+	 * the iterator's own {@code remove} operation, or throw the {@code setValue}
+	 * operation on a node entry returned by the iterator) the results of the iteration
+	 * are undefined. The set support element removal, which removes the corresponding
+	 * relation from the node, via the {@code Iterator.remove}, {@code Set.remove}, {@code
+	 * removeAll}, {@code retainAll} and {@code clear} operations. Id does not support the
+	 * {@code add} or {@code addAll} operations.
 	 *
-	 * @return the value of this node.
-	 * @since 0.0.1 ~2021.04.22
+	 * @return a set view of the relations contained in this node.
+	 * @since 0.0.1 ~2021.04.24
 	 */
-	@Nullable
+	@NotNull
 	@Contract(pure = true)
-	V get();
-
-	/**
-	 * Set the value of this node to be the given {@code value}.
-	 *
-	 * @param value the new value of this node.
-	 * @return the previous value of this node.
-	 * @throws NullPointerException          if the given {@code value} is null and this
-	 *                                       node does not support null value.
-	 * @throws IllegalArgumentException      if this node rejected the given {@code
-	 *                                       value}.
-	 * @throws ClassCastException            if the given {@code value} is of an
-	 *                                       inappropriate type for this node.
-	 * @throws UnsupportedOperationException if this node refused to change its value.
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@Nullable
-	@Contract(mutates = "this")
-	V set(@Nullable V value);
+	Set<Entry<V>> entrySet();
 
 	// Interfaces
 
@@ -902,5 +944,105 @@ public interface Node<V> {
 				throw new IllegalStateException("setValue");
 			return node.set(value);
 		}
+	}
+
+	/**
+	 * The entry in a node is a wrapper class for the opposite link of a link in that
+	 * node.
+	 *
+	 * @param <V> the type of the value.
+	 * @author LSafer
+	 * @version 0.0.1
+	 * @since 0.0.1 ~2021.04.24
+	 */
+	interface Entry<V> {
+		/**
+		 * Determine if the given {@code object} equals this entry.
+		 * <br>
+		 * An object equals a node entry if that object is a node entry and have an equal
+		 * key and value.
+		 *
+		 * @param object the object to be checked.
+		 * @return true, if the given {@code object} equals this.
+		 * @since 0.0.1 ~2021.04.24
+		 */
+		@Contract(value = "null->false", pure = true)
+		@Override
+		boolean equals(@Nullable Object object);
+
+		/**
+		 * Calculate the hash code of this entry.
+		 * <br>
+		 * Usually the hash code of a node entry is the {@code XOR} of the hash code of
+		 * its key and value.
+		 *
+		 * @return the hash code of this entry.
+		 * @since 0.0.1 ~2021.04.24
+		 */
+		@Contract(pure = true)
+		@Override
+		int hashCode();
+
+		/**
+		 * Returns a string representation of this entry.
+		 * <br>
+		 * Usually the string representation of a node entry is the string representation
+		 * of its key and value separated by an equal sign.
+		 *
+		 * @return a string representation of this entry.
+		 * @since 0.0.1 ~2021.04.24
+		 */
+		@NotNull
+		@Contract(pure = true)
+		@Override
+		String toString();
+
+		/**
+		 * The key of this entry.
+		 * <br>
+		 * The opposite key of the link this entry is delegating to.
+		 *
+		 * @return the key of this entry.
+		 * @since 0.0.1 ~2021.04.24
+		 */
+		@NotNull
+		@Contract(pure = true)
+		Key getKey();
+
+		/**
+		 * The value of this entry.
+		 * <br>
+		 * The value of the node of the opposite of the link this entry is delegating to.
+		 *
+		 * @return the value of this entry.
+		 * @since 0.0.1 ~2021.04.24
+		 */
+		@Nullable
+		@Contract(pure = true)
+		V getValue();
+
+		/**
+		 * Set the value of this entry to the given {@code value}.
+		 * <br>
+		 * Set the value of the node of the opposite of the link this entry is delegating
+		 * to.
+		 *
+		 * @param value the value to be set.
+		 * @return the previous value of this entry.
+		 * @throws IllegalStateException         if the opposite of the link this entry is
+		 *                                       delegating to is currently pointing to
+		 *                                       nothing.
+		 * @throws NullPointerException          if the given {@code value} is null and
+		 *                                       the node does not support null value.
+		 * @throws IllegalArgumentException      if the node rejected the given {@code
+		 *                                       value}.
+		 * @throws ClassCastException            if the given {@code value} is of an
+		 *                                       inappropriate type for the node.
+		 * @throws UnsupportedOperationException if the node refused to change its value.
+		 * @since 0.0.1 ~2021.04.24
+		 */
+		@Nullable
+		@Contract(mutates = "this")
+		V setValue(@Nullable V value);
 	}
 }

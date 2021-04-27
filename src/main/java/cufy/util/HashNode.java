@@ -18,6 +18,7 @@ package cufy.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -29,28 +30,32 @@ import java.util.*;
  * @since 0.0.1 ~2021.04.18
  */
 @SuppressWarnings("ClassHasNoToStringMethod")
-public class HashNode<V> extends AbstractNode<V> {
+public class HashNode<V> extends AbstractNode<V> implements Serializable {
+	@SuppressWarnings("JavaDoc")
+	private static final long serialVersionUID = -1002661014994618576L;
+
 	/**
 	 * A map containing the links pointing to this node with the respected keys.
 	 *
 	 * @since 0.0.1 ~2021.04.22
 	 */
 	@NotNull
-	protected final Map<Key, Link<V>> map = new HashMap<>();
-	/**
-	 * A lazily initialized link set view accessing the links pointing to this node.
-	 *
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@Nullable
-	protected Set<Link<V>> linkSet;
+	private final Map<Key, Link<V>> map = new HashMap<>();
 	/**
 	 * The currently set value of this node.
 	 *
 	 * @since 0.0.1 ~2021.04.22
 	 */
 	@Nullable
-	protected V value;
+	private V value;
+
+	/**
+	 * A lazily initialized link set view accessing the links pointing to this node.
+	 *
+	 * @since 0.0.1 ~2021.04.22
+	 */
+	@Nullable
+	private transient Set<Link<V>> linkSet;
 
 	/**
 	 * Construct a new node with its value initialized to {@code null}.

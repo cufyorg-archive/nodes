@@ -58,7 +58,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * @since 0.0.1 ~2021.04.22
 	 */
 	@Nullable
-	protected Collection<Node<V>> nodes;
+	private transient Collection<Node<V>> nodes;
 	/**
 	 * A lazily initialized key set view accessing the keys of the links pointing to this
 	 * node.
@@ -66,7 +66,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * @since 0.0.1 ~2021.04.22
 	 */
 	@Nullable
-	protected Set<Key> keySet;
+	private transient Set<Key> keySet;
 	/**
 	 * A lazily initialized nodes collection view accessing the values of the nodes
 	 * related to this node.
@@ -74,14 +74,14 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * @since 0.0.1 ~2021.04.23
 	 */
 	@Nullable
-	protected Collection<V> values;
+	private transient Collection<V> values;
 	/**
 	 * A lazily initialized key set view accessing the entries of this node.
 	 *
 	 * @since 0.0.1 ~2021.04.27
 	 */
 	@Nullable
-	protected Set<Entry<V>> entrySet;
+	private transient Set<Entry<V>> entrySet;
 
 	// Object
 
@@ -134,8 +134,10 @@ public abstract class AbstractNode<V> implements Node<V> {
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		AbstractNode<?> clone = (AbstractNode<?>) super.clone();
-		clone.keySet = null;
 		clone.nodes = null;
+		clone.keySet = null;
+		clone.values = null;
+		clone.entrySet = null;
 		return clone;
 	}
 

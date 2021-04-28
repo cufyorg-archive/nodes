@@ -35,6 +35,128 @@ import java.util.*;
  * @since 0.0.1 ~2021.04.27
  */
 public interface Nodes {
+	//op
+
+	/**
+	 * Push the head of the given {@code other} node after the given {@code node} with
+	 * respect to the given {@code key}. The previous node after the given {@code node}
+	 * will be after the tail of the given {@code other} node.
+	 * <br>
+	 * If the given {@code other} node has no head or no tail, then an {@link
+	 * IllegalArgumentException} will be thrown with nothing changed.
+	 * <br>
+	 * If an exception occurred while putting the {@code other} node after the given
+	 * {@code node}, then the exception will fall throw this method with nothing changed.
+	 * If an exception occurred while putting the previous node after the given {@code
+	 * node} after the tail of the {@code other} node, then the exception will fall throw
+	 * this method with the {@code other} node replacing the previous node but the
+	 * previous node not put after the {@code other} node.
+	 *
+	 * @param key   the key to where to push the {@code other} node.
+	 * @param node  the node to push the {@code other} node after.
+	 * @param other the node to be pushed.
+	 * @param <V>   the type of the value of the nodes.
+	 * @throws NullPointerException          if the given {@code key} or {@code node} or
+	 *                                       {@code other} is null.
+	 * @throws IllegalArgumentException      when a node relative to the given {@code
+	 *                                       other} is relative to itself (direct or
+	 *                                       indirect relation) with respect to the given
+	 *                                       {@code key} or its opposite;
+	 *                                       <br>
+	 *                                       if {@code node}, {@code node.getNext(Key)},
+	 *                                       {@code Nodes.head(other)} or {@code
+	 *                                       Nodes.tail(other)} rejected a key or a link
+	 *                                       required for the operation.
+	 * @throws UnsupportedOperationException if {@code node}, {@code node.getNext(key)},
+	 *                                       {@code Nodes.head(other)} or {@code
+	 *                                       Nodes.tail(other)} refused to perform the
+	 *                                       required for the operation.
+	 * @since 0.0.3 ~2021.04.28
+	 */
+	@Contract(mutates = "param2,param3")
+	static <V> void push(@NotNull Key key, @NotNull Node<V> node, @NotNull Node<V> other) {
+		Objects.requireNonNull(key, "key");
+		Objects.requireNonNull(node, "node");
+		Objects.requireNonNull(other, "other");
+
+		Node<V> head = Nodes.head(key, other);
+		Node<V> tail = Nodes.tail(key, other);
+
+		//put `other` after `node`
+		Node<V> old = node.putNode(key, head);
+
+		if (old != null)
+			//put `old` after the tail of `other`
+			tail.putNode(key, old);
+	}
+
+	/**
+	 * Return the most node to the given {@code key} relative to the given {@code node}.
+	 * It works by recursively getting the tail of the node relative to the given {@code
+	 * node} with the given {@code key} until reaching a node with no node relative to it
+	 * with the given {@code key}. The tail of such node is itself and the tail of the
+	 * nodes previous to it is it itself.
+	 *
+	 * @param key  the key of where to get the tail.
+	 * @param node the node to get its tail.
+	 * @param <V>  the type of the value of the node.
+	 * @return the tail node to the given {@code node} with respect to the given {@code
+	 * 		key}.
+	 * @throws NullPointerException     if the given {@code key} or {@code node} is null.
+	 * @throws IllegalArgumentException when a node is relative to itself (direct or
+	 *                                  indirect relation) with respect to the given
+	 *                                  {@code key}.
+	 * @since 0.0.3 ~2021.04.28
+	 */
+	@NotNull
+	@Contract(pure = true)
+	static <V> Node<V> tail(@NotNull Key key, @NotNull Node<V> node) {
+		Objects.requireNonNull(key, "key");
+		Objects.requireNonNull(node, "node");
+		Node<V> next = node.getNode(key);
+		if (next == null)
+			// `node` is the tail of itself
+			return node;
+		else
+			//noinspection ErrorNotRethrown
+			try {
+				// the tail of `next` is the tail of `node`
+				return Nodes.tail(key, next);
+			} catch (StackOverflowError | IllegalArgumentException ignore) {
+				// no tail >:(
+				throw new IllegalArgumentException("Tailless Node");
+			}
+	}
+
+	/**
+	 * Return the most node to the opposite of the given {@code key} relative to the given
+	 * {@code node}. It works by getting the tail of the given node with respect to the
+	 * opposite of the given {@code key}.
+	 *
+	 * @param key  the key of where to get the tail.
+	 * @param node the node to get its tail.
+	 * @param <V>  the type of the value of the node.
+	 * @return the tail node to the given {@code node} with respect to the given {@code
+	 * 		key}.
+	 * @throws NullPointerException     if the given {@code key} or {@code node} is null.
+	 * @throws IllegalArgumentException when a node is relative to itself (direct or
+	 *                                  indirect relation) with respect to the given
+	 *                                  {@code key}.
+	 * @since 0.0.3 ~2021.04.28
+	 */
+	@NotNull
+	@Contract(pure = true)
+	static <V> Node<V> head(@NotNull Key key, @NotNull Node<V> node) {
+		Objects.requireNonNull(key, "key");
+		Objects.requireNonNull(node, "node");
+		//the head is the opposite of the tail
+		try {
+			return Nodes.tail(key.opposite(), node);
+		} catch (IllegalArgumentException ignore) {
+			throw new IllegalArgumentException("Headless Node");
+		}
+	}
+
 	//unmodifiable
 
 	/**

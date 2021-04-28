@@ -14,6 +14,8 @@
  *	limitations under the License.
  */
 /**
+ * The nodes are a non-centralized data structure.
+ *
  * @author LSafer
  * @version 0.0.1
  * @since 0.0.1 ~2021.04.22

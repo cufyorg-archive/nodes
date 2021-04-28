@@ -22,15 +22,15 @@ import org.jetbrains.annotations.NotNull;
  * The sides of a hexagon.
  *
  * @author LSafer
- * @version 0.0.1
- * @since 0.0.1 ~2021.04.28
+ * @version 0.0.2
+ * @since 0.0.2 ~2021.04.28
  */
 @SuppressWarnings("InterfaceMayBeAnnotatedFunctional")
 public interface Hexagon extends Tetragon {
 	/**
 	 * The side at the back of the hexagon. (Z-)
 	 *
-	 * @since 0.0.1 ~2021.04.28
+	 * @since 0.0.2 ~2021.04.28
 	 */
 	@NotNull
 	Hexagon BACK = new Hexagon() {
@@ -48,7 +48,7 @@ public interface Hexagon extends Tetragon {
 	/**
 	 * The side at the front of the hexagon. (Z+)
 	 *
-	 * @since 0.0.1 ~2021.04.28
+	 * @since 0.0.2 ~2021.04.28
 	 */
 	@NotNull
 	Hexagon FRONT = new Hexagon() {

@@ -17,7 +17,7 @@
  * This package contains polygons constants.
  *
  * @author LSafer
- * @version 0.0.1
- * @since 0.0.1 ~2021.04.28
+ * @version 0.0.2
+ * @since 0.0.2 ~2021.04.28
  */
 package cufy.util.polygon;

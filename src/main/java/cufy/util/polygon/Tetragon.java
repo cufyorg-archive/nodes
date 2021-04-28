@@ -22,15 +22,15 @@ import org.jetbrains.annotations.NotNull;
  * The sides of a tetragon.
  *
  * @author LSafer
- * @version 0.0.1
- * @since 0.0.1 ~2021.04.28
+ * @version 0.0.2
+ * @since 0.0.2 ~2021.04.28
  */
 @SuppressWarnings("InterfaceMayBeAnnotatedFunctional")
 public interface Tetragon extends Digon {
 	/**
 	 * The side at the end of the tetragon. (Y-)
 	 *
-	 * @since 0.0.1 ~2021.04.28
+	 * @since 0.0.2 ~2021.04.28
 	 */
 	@NotNull
 	Tetragon BOTTOM = new Tetragon() {
@@ -48,7 +48,7 @@ public interface Tetragon extends Digon {
 	/**
 	 * The side at the top of the tetragon. (Y+)
 	 *
-	 * @since 0.0.1 ~2021.04.28
+	 * @since 0.0.2 ~2021.04.28
 	 */
 	@NotNull
 	Tetragon TOP = new Tetragon() {

@@ -22,15 +22,15 @@ import org.jetbrains.annotations.NotNull;
  * The sides of a digon.
  *
  * @author LSafer
- * @version 0.0.1
- * @since 0.0.1 ~2021.04.28
+ * @version 0.0.2
+ * @since 0.0.2 ~2021.04.28
  */
 @SuppressWarnings("InterfaceMayBeAnnotatedFunctional")
 public interface Digon extends Key {
 	/**
 	 * The side at the start of the digon. (X-)
 	 *
-	 * @since 0.0.1 ~2021.04.28
+	 * @since 0.0.2 ~2021.04.28
 	 */
 	@NotNull
 	Digon START = new Digon() {
@@ -48,7 +48,7 @@ public interface Digon extends Key {
 	/**
 	 * The side to the end of the digon. (X+)
 	 *
-	 * @since 0.0.1 ~2021.04.28
+	 * @since 0.0.2 ~2021.04.28
 	 */
 	@NotNull
 	Digon END = new Digon() {

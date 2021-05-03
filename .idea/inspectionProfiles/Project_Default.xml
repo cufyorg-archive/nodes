@@ -29,11 +29,11 @@
     <inspection_tool class="AnonymousClassMethodCount" enabled="true" level="INFORMATION" enabled_by_default="true">
       <option name="m_limit" value="1" />
     </inspection_tool>
-    <inspection_tool class="AnonymousClassVariableHidesContainingMethodVariable" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AnonymousClassVariableHidesContainingMethodVariable" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="AnonymousInnerClass" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="AnonymousInnerClassMayBeStatic" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="ArrayEquality" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="ArrayLengthInLoopCondition" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ArrayLengthInLoopCondition" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="AssertEqualsCalledOnArray" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AssertEqualsMayBeAssertSame" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AssertMessageNotString" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -272,6 +272,9 @@
       <option name="commentsAreContent" value="true" />
     </inspection_tool>
     <inspection_tool class="EmptyDirectory" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="EmptyStatementBody" enabled="true" level="INFORMATION" enabled_by_default="true">
+      <option name="m_reportEmptyBlocks" value="true" />
+    </inspection_tool>
     <inspection_tool class="EmptySynchronizedStatement" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="EnumClass" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="EnumerationCanBeIteration" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -540,7 +543,7 @@
     <inspection_tool class="MalformedSetUpTearDown" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MapReplaceableByEnumMap" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MarkerInterface" enabled="true" level="INFORMATION" enabled_by_default="true" />
-    <inspection_tool class="MethodCallInLoopCondition" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MethodCallInLoopCondition" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="MethodCount" enabled="true" level="INFORMATION" enabled_by_default="true">
       <option name="m_limit" value="20" />
       <option name="ignoreGettersAndSetters" value="false" />
@@ -569,7 +572,29 @@
     <inspection_tool class="MethodReturnOfConcreteClass" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="MethodWithMultipleLoops" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="MigrateAssertToMatcherAssert" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="MisorderedAssertEqualsArguments" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MismatchedCollectionQueryUpdate" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Tests" level="INFORMATION" enabled="true">
+        <option name="queryNames">
+          <value />
+        </option>
+        <option name="updateNames">
+          <value />
+        </option>
+        <option name="ignoredClasses">
+          <value />
+        </option>
+      </scope>
+      <option name="queryNames">
+        <value />
+      </option>
+      <option name="updateNames">
+        <value />
+      </option>
+      <option name="ignoredClasses">
+        <value />
+      </option>
+    </inspection_tool>
+    <inspection_tool class="MisorderedAssertEqualsArguments" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="MissingDeprecatedAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreObjectMethods" value="true" />
@@ -954,6 +979,11 @@
           <option value="ClassHasNoToStringMethod" />
           <option value="JUnitTestMethodWithNoAssertions" />
           <option value="ErrorNotRethrown" />
+          <option value="MethodCallInLoopCondition" />
+          <option value="DuplicatedCode" />
+          <option value="OverlyLongMethod" />
+          <option value="OverloadedVarargsMethod" />
+          <option value="DeprecatedIsStillUsed" />
         </list>
       </option>
     </inspection_tool>

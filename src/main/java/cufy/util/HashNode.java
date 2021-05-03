@@ -229,48 +229,4 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 		//no previous node to be returned
 		return null;
 	}
-
-	// Map
-
-	@Nullable
-	@Override
-	public V put(@NotNull /*opposite*/ Key key, @Nullable V value) {
-		Objects.requireNonNull(key, "key");
-		Key opposite = key.opposite();
-
-		//get the link
-		Link<V> l = this.map.get(opposite);
-
-		//see if create new link required
-		if (l == null) {
-			//create new link
-			l = new SimpleLink<>(opposite);
-
-			//add it to this
-			this.map.put(opposite, l);
-
-			//add this to it
-			l.setNode(this);
-		}
-
-		//get the node
-		Node<V> n = l.getOpposite().getNode();
-
-		//see if create new node required
-		if (n == null) {
-			//create new node
-			n = new HashNode<>();
-
-			//add the opposite link to `node`
-			n.linkSet().add(l.getOpposite());
-		}
-
-		//set the value to the node
-		return n.set(value);
-		/*
-		No worries about `fail->no changes` contract.
-		If the node was created by this node. It is a HashNode so it will accept any value and any link.
-		Otherwise, no link nor node will be changed. Since `l` and `n` will not be null anyway!
-		*/
-	}
 }

@@ -97,21 +97,6 @@ import java.util.Set;
  *             This view point is to treat the node as a Map with the keys being the
  *             opposite of the keys the node has.
  *         </li>
- *         <li>
- *             <b>Values</b>
- *             An additional flipped viewing point viewing the values of the other nodes
- *             relating to the node.
- *             This view point is to treat the node as a Map with the values being the
- *             values of the nodes relating to the node.
- *         </li>
- *         <li>
- *             <b>Entries</b>
- *             An additional flipped viewing point viewing a wrapper objects wrapping the
- *             opposite links of the links the node has.
- *             This view point is to treat the node as a Map with the keys being the keys
- *             of the links to the side of the nodes relating to the node and the values
- *             being the values of the corresponding nodes.
- *         </li>
  *     </ul>
  * </div>
  *
@@ -214,10 +199,6 @@ public interface Node<V> {
 	 * The returned set will only permit {@code non-null} {@link Link} elements. So, any
 	 * operation like {@code contains} will fail when {@code null} or a non {@link Set} is
 	 * passed to it.
-	 * <br>
-	 * Additionally the returned set will not support the {@code add} and {@code addAll}
-	 * operation. But, the returned set will support the {@code remove} and {@code
-	 * removeAll} operations.
 	 * <br>
 	 * An iterator of the returned set will throw {@link ConcurrentModificationException}
 	 * when used after a modification is applied to this node after the creation of that
@@ -386,75 +367,6 @@ public interface Node<V> {
 	boolean containsKey(@NotNull Key key);
 
 	/**
-	 * Check if this node has a relation (link) between it and a node with the given
-	 * {@code value}.
-	 *
-	 * @param value the value to be checked.
-	 * @return true, if this node has a relation with a node that has the given {@code
-	 * 		value}.
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@Contract(pure = true)
-	boolean containsValue(@NotNull V value);
-
-	/**
-	 * Get the value of the node relating to this node with the opposite of the given
-	 * {@code key}.
-	 *
-	 * @param key the opposite key of the link linking this node and the node its value to
-	 *            be gotten.
-	 * @return the value of the node relating to this node with the opposite of the given
-	 *        {@code key}. Or {@code null} if no such value. A {@code null} can also indicate
-	 * 		that the found node has explicitly set {@code null} as its value.
-	 * @throws NullPointerException if the given {@code key} is null.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Nullable
-	@Contract(pure = true)
-	V get(@NotNull Key key);
-
-	/**
-	 * Create a new relation of the given {@code key} to a new node with the given {@code
-	 * value}.
-	 * <br>
-	 * This method will create a new node (if this has a relation with a node with the
-	 * opposite key then that node WILL be used instead) then set its value to the given
-	 * {@code value} thn create a new link (if this contains an unused link then that
-	 * unused link WILL be used instead) then add its opposite to the newly created node
-	 * then remove the previous link with the opposite of the given {@code key} from this
-	 * node then add the newly created link to this node.
-	 * <br>
-	 * If this node rejected either the opposite of the given {@code key} or the given
-	 * {@code value}. Then, an exception will be thrown with nothing changed.
-	 *
-	 * @param key   the key of the new relation (its opposite is the side of this node).
-	 * @param value the initial value of the node that will be created.
-	 * @return the value of the previous node that was relating to this node with the
-	 * 		opposite of the given {@code key}.
-	 * @throws NullPointerException          if the given {@code key} is null; if the
-	 *                                       given {@code value} is null and the newly
-	 *                                       created node does not support null values.
-	 * @throws IllegalArgumentException      if this node rejected the opposite of the
-	 *                                       given {@code key}; if the newly created node
-	 *                                       rejected the given {@code key}; if the newly
-	 *                                       created node rejected the link created by
-	 *                                       this node; if the newly created node rejected
-	 *                                       the given {@code value}.
-	 * @throws ClassCastException            if the given {@code value} is of an
-	 *                                       inappropriate type for the newly created
-	 *                                       node.
-	 * @throws UnsupportedOperationException if this node refused to have a link with the
-	 *                                       opposite of the given {@code key}; if the
-	 *                                       newly created node refused to have a link
-	 *                                       with the given {@code key}; if the newly
-	 *                                       created node refused to change its value.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Nullable
-	@Contract(mutates = "this")
-	V put(@NotNull Key key, @Nullable V value);
-
-	/**
 	 * Remove the link with the opposite of the given {@code key} from this node.
 	 *
 	 * @param key the opposite key of the link to be removed
@@ -493,49 +405,6 @@ public interface Node<V> {
 	@NotNull
 	@Contract(pure = true)
 	Set<Key> keySet();
-
-	/**
-	 * A nullable view of the values of the nodes related to this node.
-	 * <br>
-	 * The returned collection is a reflection of this node. So, any changes to this node
-	 * will be reflected in the returned collection and vice versa.
-	 * <br>
-	 * The returned collection will only permit {@code non-null} {@code Node} elements.
-	 * So, any operation like {@code contains} will fail when {@code null} or a non {@link
-	 * Node} is passed to it.
-	 * <br>
-	 * Additionally the returned collection will not support the {@code add} and {@code
-	 * addAll} operation. But, the returned collection will support the {@code remove} and
-	 * {@code removeAll} operations.
-	 * <br>
-	 * An iterator of the returned collection will throw {@link
-	 * ConcurrentModificationException} when used after a modification is applied to this
-	 * node after the creation of that iterator.
-	 *
-	 * @return a view of the values of the related nodes to this node.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@NotNull
-	@Contract(pure = true)
-	Collection<V> values();
-
-	/**
-	 * Returns a {@link Set} view of the relation entries in this node. The set is backed
-	 * by the node, so changes to the node are reflected in the set, and vice-versa. If
-	 * the node modified while an iteration over the set is in progress (except through
-	 * the iterator's own {@code remove} operation, or throw the {@code setValue}
-	 * operation on a node entry returned by the iterator) the results of the iteration
-	 * are undefined. The set support element removal, which removes the corresponding
-	 * relation from the node, via the {@code Iterator.remove}, {@code Set.remove}, {@code
-	 * removeAll}, {@code retainAll} and {@code clear} operations. Id does not support the
-	 * {@code add} or {@code addAll} operations.
-	 *
-	 * @return a set view of the relations contained in this node.
-	 * @since 0.0.1 ~2021.04.24
-	 */
-	@NotNull
-	@Contract(pure = true)
-	Set<Entry<V>> entrySet();
 
 	// Interfaces
 
@@ -825,105 +694,5 @@ public interface Node<V> {
 				throw new IllegalStateException("setValue");
 			return node.set(value);
 		}
-	}
-
-	/**
-	 * The entry in a node is a wrapper class for the opposite link of a link in that
-	 * node.
-	 *
-	 * @param <V> the type of the value.
-	 * @author LSafer
-	 * @version 0.0.1
-	 * @since 0.0.1 ~2021.04.24
-	 */
-	interface Entry<V> {
-		/**
-		 * Determine if the given {@code object} equals this entry.
-		 * <br>
-		 * An object equals a node entry if that object is a node entry and have an equal
-		 * key and value.
-		 *
-		 * @param object the object to be checked.
-		 * @return true, if the given {@code object} equals this.
-		 * @since 0.0.1 ~2021.04.24
-		 */
-		@Contract(value = "null->false", pure = true)
-		@Override
-		boolean equals(@Nullable Object object);
-
-		/**
-		 * Calculate the hash code of this entry.
-		 * <br>
-		 * Usually the hash code of a node entry is the {@code XOR} of the hash code of
-		 * its key and value.
-		 *
-		 * @return the hash code of this entry.
-		 * @since 0.0.1 ~2021.04.24
-		 */
-		@Contract(pure = true)
-		@Override
-		int hashCode();
-
-		/**
-		 * Returns a string representation of this entry.
-		 * <br>
-		 * Usually the string representation of a node entry is the string representation
-		 * of its key and value separated by an equal sign.
-		 *
-		 * @return a string representation of this entry.
-		 * @since 0.0.1 ~2021.04.24
-		 */
-		@NotNull
-		@Contract(pure = true)
-		@Override
-		String toString();
-
-		/**
-		 * The key of this entry.
-		 * <br>
-		 * The opposite key of the link this entry is delegating to.
-		 *
-		 * @return the key of this entry.
-		 * @since 0.0.1 ~2021.04.24
-		 */
-		@NotNull
-		@Contract(pure = true)
-		Key getKey();
-
-		/**
-		 * The value of this entry.
-		 * <br>
-		 * The value of the node of the opposite of the link this entry is delegating to.
-		 *
-		 * @return the value of this entry.
-		 * @since 0.0.1 ~2021.04.24
-		 */
-		@Nullable
-		@Contract(pure = true)
-		V getValue();
-
-		/**
-		 * Set the value of this entry to the given {@code value}.
-		 * <br>
-		 * Set the value of the node of the opposite of the link this entry is delegating
-		 * to.
-		 *
-		 * @param value the value to be set.
-		 * @return the previous value of this entry.
-		 * @throws IllegalStateException         if the opposite of the link this entry is
-		 *                                       delegating to is currently pointing to
-		 *                                       nothing.
-		 * @throws NullPointerException          if the given {@code value} is null and
-		 *                                       the node does not support null value.
-		 * @throws IllegalArgumentException      if the node rejected the given {@code
-		 *                                       value}.
-		 * @throws ClassCastException            if the given {@code value} is of an
-		 *                                       inappropriate type for the node.
-		 * @throws UnsupportedOperationException if the node refused to change its value.
-		 * @since 0.0.1 ~2021.04.24
-		 */
-		@Nullable
-		@Contract(mutates = "this")
-		V setValue(@Nullable V value);
 	}
 }

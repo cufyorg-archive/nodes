@@ -33,10 +33,9 @@ import java.util.*;
  * support the {@code remove} method.
  * <br>
  * To implement a modifiable node, the programmer must additionally override this class's
- * {@code linkSet().add(Link)}, {@link #putNode(Key, Node)}, {@link #put(Key, V)} methods
- * (which otherwise throws an {@link UnsupportedOperationException}), and the iterator
- * returned by {@code linkSet().iterator()} must additionally implement its {@code remove}
- * method.
+ * {@link #putNode(Key, Node)} methods (which otherwise throws an {@link
+ * UnsupportedOperationException}), and the iterator returned by {@code
+ * linkSet().iterator()} must additionally implement its {@code remove} method.
  * <br>
  * The programmer should generally provide a void (no argument) constructor, as per the
  * recommendation in the {@link Node} interface specification.
@@ -75,13 +74,6 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 */
 	@Nullable
 	private transient Collection<V> values;
-	/**
-	 * A lazily initialized key set view accessing the entries of this node.
-	 *
-	 * @since 0.0.1 ~2021.04.27
-	 */
-	@Nullable
-	private transient Set<Entry<V>> entrySet;
 
 	// Object
 
@@ -137,7 +129,6 @@ public abstract class AbstractNode<V> implements Node<V> {
 		clone.nodes = null;
 		clone.keySet = null;
 		clone.values = null;
-		clone.entrySet = null;
 		return clone;
 	}
 
@@ -354,57 +345,6 @@ public abstract class AbstractNode<V> implements Node<V> {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @implSpec This implementation iterates over {@code linkSet()} searching for a
-	 * 		link with its opposite pointing to a node that has the given {@code value}. If
-	 * 		such link is found, {@code true} is returned. If the iteration terminates without
-	 * 		finding such a link, {@code false} is returned. Note that this implementation
-	 * 		requires linear time in the size of the node.
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@Override
-	public boolean containsValue(@Nullable V value) {
-		for (Link<V> l : this.linkSet())
-			if (Objects.equals(l.getOpposite().getValue(), value))
-				return true;
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @implSpec this implementation iterates over {@code linkSet()} searching for a
-	 * 		link with the opposite of the given {@code key}. If such link is found, the value
-	 * 		of the node of the opposite link of the found link will be returned. If the
-	 * 		iteration terminates without finding such a link, {@code null} is returned. Note
-	 * 		that this implementation requires linear time in the size of this node.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Nullable
-	@Override
-	public V get(@NotNull /*opposite*/ Key key) {
-		Objects.requireNonNull(key, "key");
-		Key opposite = key.opposite();
-		for (Link<V> l : this.linkSet())
-			if (l.getKey().equals(opposite))
-				return l.getOpposite().getValue();
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @implSpec this implementation always throws an {@link UnsupportedOperationException}.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Nullable
-	@Override
-	public V put(@NotNull /*opposite*/ Key key, @Nullable V value) {
-		throw new UnsupportedOperationException("put");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
 	 * @implSpec this implementation iterates over {@code linkSet()} searching for a
 	 * 		link with the opposite of the given {@code key}. If such a link is found, the
 	 * 		link with be removed from the collection (and this node) with the iterator's
@@ -497,135 +437,6 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 		//noinspection AssignmentOrReturnOfFieldWithMutableType
 		return this.keySet;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @implSpec this implementation returns a collection that subclasses {@link
-	 *        AbstractCollection}. The subclass's iterator method returns a "wrapper object"
-	 * 		over this node's {@code linkSet()} iterator. The {@code size} method delegates to
-	 * 		this node's {@code size} method and the {@code contains} method delegates to this
-	 * 		node's {@link #containsValue} method.
-	 * 		<br>
-	 * 		The collection is created the first time this method is called, and returned in
-	 * 		response to all subsequent calls. No synchronization is performed, so there is a
-	 * 		slight chance that multiple calls to this method will not all return the same
-	 * 		set. (which is OK most of the time)
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@NotNull
-	@Override
-	public Collection<V> values() {
-		if (this.values == null)
-			this.values = new AbstractCollection<V>() {
-				@Override
-				public void clear() {
-					//noinspection ConstantConditions
-					AbstractNode.this.clear();
-				}
-
-				@Override
-				public boolean contains(Object object) {
-					return AbstractNode.this.containsValue((V) object);
-				}
-
-				@Override
-				public boolean isEmpty() {
-					return AbstractNode.this.isEmpty();
-				}
-
-				@Override
-				public Iterator<V> iterator() {
-					Iterator<Link<V>> i = AbstractNode.this.linkSet().iterator();
-					return new Iterator<V>() {
-						@Override
-						public boolean hasNext() {
-							return i.hasNext();
-						}
-
-						@Override
-						public V next() {
-							return i.next().getOpposite().getValue();
-						}
-
-						@Override
-						public void remove() {
-							i.remove();
-						}
-					};
-				}
-
-				@Override
-				public int size() {
-					return AbstractNode.this.size();
-				}
-			};
-
-		//noinspection AssignmentOrReturnOfFieldWithMutableType
-		return this.values;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @implSpec this implementation returns a set that subclasses {@link AbstractSet}.
-	 * 		The subclass's iterator method returns a "wrapper object" over this node's {@code
-	 * 		linkSet()} iterator. The iterator's {@code next()} method will return a new
-	 *        {@link LinkEntry} wrapping the link returned by the original iterator. The {@code
-	 * 		size} method delegates to this node's {@code size} method.
-	 * 		<br>
-	 * 		The set is created the first time this method is called, and returned in response
-	 * 		to all subsequent calls. No synchronization is performed, so there is a slight
-	 * 		chance that multiple calls to this method will not all return the same set.
-	 * 		(which is OK most of the time)
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@NotNull
-	@Override
-	public Set<Entry<V>> entrySet() {
-		if (this.entrySet == null)
-			this.entrySet = new AbstractSet<Entry<V>>() {
-				@Override
-				public void clear() {
-					//noinspection ConstantConditions
-					AbstractNode.this.clear();
-				}
-
-				@Override
-				public boolean isEmpty() {
-					return AbstractNode.this.isEmpty();
-				}
-
-				@Override
-				public Iterator<Entry<V>> iterator() {
-					Iterator<Link<V>> i = AbstractNode.this.linkSet().iterator();
-					return new Iterator<Entry<V>>() {
-						@Override
-						public boolean hasNext() {
-							return i.hasNext();
-						}
-
-						@Override
-						public Entry<V> next() {
-							return new LinkEntry<>(i.next().getOpposite());
-						}
-
-						@Override
-						public void remove() {
-							i.remove();
-						}
-					};
-				}
-
-				@Override
-				public int size() {
-					return AbstractNode.this.size();
-				}
-			};
-
-		//noinspection AssignmentOrReturnOfFieldWithMutableType
-		return this.entrySet;
 	}
 
 	// Classes
@@ -868,121 +679,6 @@ public abstract class AbstractNode<V> implements Node<V> {
 				this.node = node;
 
 			return n;
-		}
-	}
-
-	/**
-	 * An entry wrapping a link.
-	 *
-	 * @param <V>
-	 */
-	public static class LinkEntry<V> implements Entry<V> {
-		/**
-		 * The link this entry is delegating to.
-		 *
-		 * @since 0.0.1 ~2021.04.27
-		 */
-		@NotNull
-		protected final Link<V> link;
-
-		/**
-		 * Construct a new entry delegating to the given {@code link}. The key of the
-		 * constructed entry will be the key of the given {@code link} and the value will
-		 * be the value of the node the given {@code link} is pointing to.
-		 *
-		 * @param link the link to delegated to.
-		 * @throws NullPointerException if the given {@code link} is null.
-		 * @since 0.0.1 ~2021.04.27
-		 */
-		public LinkEntry(@NotNull Link<V> link) {
-			Objects.requireNonNull(link, "link");
-			this.link = link;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @implSpec if the given {@code object} is this, {@code true} is returned. If
-		 * 		the given {@code object} is an {@link Entry} and has an equal key and value,
-		 *        {@code true} is returned. Otherwise, {@code false} is returned.
-		 * @since 0.0.1 ~2021.04.27
-		 */
-		@Override
-		public boolean equals(@Nullable Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof Entry) {
-				Entry entry = (Entry) object;
-
-				return Objects.equals(this.link.getKey(), entry.getKey()) &&
-					   Objects.equals(this.link.getValue(), entry.getValue());
-			}
-
-			return false;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @implSpec this implementation will use {@link Objects#hashCode(Object)} with
-		 * 		the key and the value of this entry. Then, returns the value of {@code
-		 * 		XOR}-ing the hash codes.
-		 * @since 0.0.1 ~2021.04.27
-		 */
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(this.link.getKey()) ^
-				   Objects.hashCode(this.link.getValue());
-		}
-
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @implSpec this implementation will return {@code link.getKey() + "=" +
-		 * 		link.getValue()}.
-		 * @since 0.0.1 ~2021.04.27
-		 */
-		@NotNull
-		@Override
-		public String toString() {
-			return this.link.getKey() + "=" +
-				   this.link.getValue();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @implSpec this implementation will return {@code link.getKey()}.
-		 * @since 0.0.1 ~2021.04.27
-		 */
-		@NotNull
-		@Override
-		public Key getKey() {
-			return this.link.getKey();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @implSpec this implementation will return {@code link.getValue()}.
-		 * @since 0.0.1 ~2021.04.27
-		 */
-		@Nullable
-		@Override
-		public V getValue() {
-			return this.link.getValue();
-		}
-
-		/**
-		 * {@inheritDoc}
-		 *
-		 * @return 0.0.1 ~2021.04.27
-		 * @implSpec this implementation will return {@code link.set(value)}.
-		 */
-		@Nullable
-		@Override
-		public V setValue(@Nullable V value) {
-			return this.link.setValue(value);
 		}
 	}
 }

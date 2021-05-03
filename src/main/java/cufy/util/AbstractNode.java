@@ -33,7 +33,7 @@ import java.util.*;
  * support the {@code remove} method.
  * <br>
  * To implement a modifiable node, the programmer must additionally override this class's
- * {@link #putNode(Key, Node)} methods (which otherwise throws an {@link
+ * {@link #put(Key, Node)} methods (which otherwise throws an {@link
  * UnsupportedOperationException}), and the iterator returned by {@code
  * linkSet().iterator()} must additionally implement its {@code remove} method.
  * <br>
@@ -171,7 +171,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 */
 	@Nullable
 	@Override
-	public Node<V> getNode(@NotNull /*opposite*/ Key key) {
+	public Node<V> get(@NotNull Key key) {
 		Objects.requireNonNull(key, "key");
 		Key opposite = key.opposite();
 		for (Link<V> l : this.linkSet())
@@ -183,40 +183,12 @@ public abstract class AbstractNode<V> implements Node<V> {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @implSpec this implementation iterates over {@code linkSet()} searching for links
-	 * 		with its opposite pointing to the given {@code node}. If any link was found, the
-	 * 		links will be removed from the collection (and this node) with the iterator's
-	 *        {@code remove} operation, and {@code true} will be returned. If the iteration
-	 * 		terminates without finding any link, {@code false} is returned. Note that this
-	 * 		implementation requires linear time in the size of the node.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Override
-	public boolean removeNode(@NotNull Node<V> node) {
-		Objects.requireNonNull(node, "node");
-		Iterator<Link<V>> i = this.linkSet().iterator();
-		boolean b = false;
-		while (i.hasNext()) {
-			Link<V> l = i.next();
-
-			if (l.getOpposite().getNode() == node) {
-				i.remove();
-				b = true;
-			}
-		}
-
-		return b;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
 	 * @implSpec this implementation always throws an {@link UnsupportedOperationException}.
 	 * @since 0.0.1 ~2021.04.23
 	 */
 	@Nullable
 	@Override
-	public Node<V> putNode(@NotNull /*opposite*/ Key key, @NotNull Node<V> node) {
+	public Node<V> put(@NotNull Key key, @NotNull Node<V> node) {
 		throw new UnsupportedOperationException("put");
 	}
 
@@ -333,7 +305,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * @since 0.0.1 ~2021.04.22
 	 */
 	@Override
-	public boolean containsKey(@NotNull /*opposite*/ Key key) {
+	public boolean containsKey(@NotNull Key key) {
 		Objects.requireNonNull(key, "key");
 		Key opposite = key.opposite();
 		for (Link<V> l : this.linkSet())
@@ -348,15 +320,15 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * @implSpec this implementation iterates over {@code linkSet()} searching for a
 	 * 		link with the opposite of the given {@code key}. If such a link is found, the
 	 * 		link with be removed from the collection (and this node) with the iterator's
-	 *        {@code remove} operation, and the the value of the node of the opposite of the
-	 * 		removed link will be returned. If the iteration terminates without finding such a
-	 * 		link, {@code null} is returned. Note that this implementation requires linear
-	 * 		time in the size of the node.
+	 *        {@code remove} operation, and the node of the opposite of the removed link will
+	 * 		be returned. If the iteration terminates without finding such a link, {@code
+	 * 		null} is returned. Note that this implementation requires linear time in the size
+	 * 		of the node.
 	 * @since 0.0.1 ~2021.04.23
 	 */
 	@Nullable
 	@Override
-	public V remove(@NotNull /*opposite*/ Key key) {
+	public Node<V> remove(@NotNull Key key) {
 		Objects.requireNonNull(key, "key");
 		Key opposite = key.opposite();
 		Iterator<Link<V>> i = this.linkSet().iterator();
@@ -365,7 +337,7 @@ public abstract class AbstractNode<V> implements Node<V> {
 
 			if (l.getKey().equals(opposite)) {
 				i.remove();
-				return l.getOpposite().getValue();
+				return l.getOpposite().getNode();
 			}
 		}
 

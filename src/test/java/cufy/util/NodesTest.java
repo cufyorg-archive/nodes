@@ -15,8 +15,8 @@ public class NodesTest {
 		Node<String> y = new HashNode<>("Y");
 		Node<String> z = new HashNode<>("Z");
 
-		x.putNode(Digon.END, y);
-		y.putNode(Digon.END, z);
+		x.put(Digon.END, y);
+		y.put(Digon.END, z);
 
 		assertSame(
 				x,
@@ -29,7 +29,7 @@ public class NodesTest {
 				"Wrong tail"
 		);
 
-		z.putNode(Digon.END, x);
+		z.put(Digon.END, x);
 
 		assertSame(
 				z,
@@ -92,7 +92,7 @@ public class NodesTest {
 	@Test
 	public void asDeque_pollLast_single_infinite() {
 		Node<String> node = new HashNode<>();
-		node.putNode(Digon.END, node);
+		node.put(Digon.END, node);
 		Deque<Node<String>> deque = Nodes.asDeque(Digon.END, node);
 
 		//single
@@ -162,7 +162,7 @@ public class NodesTest {
 	@Test
 	public void asDeque_pollFirst_single_infinite() {
 		Node<String> node = new HashNode<>();
-		node.putNode(Digon.END, node);
+		node.put(Digon.END, node);
 		Deque<Node<String>> deque = Nodes.asDeque(Digon.END, node);
 
 		//single
@@ -227,7 +227,7 @@ public class NodesTest {
 				UnsupportedOperationException.class,
 				() -> {
 					//noinspection ConstantConditions
-					uNode.put(Digon.START, "Awesome");
+					uNode.put(Digon.START, new HashNode<>("Awesome"));
 				},
 				"Unmodifiable node was successfully modified throw its `put` method"
 		);

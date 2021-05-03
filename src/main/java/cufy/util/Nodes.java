@@ -56,7 +56,7 @@ public interface Nodes {
 		Objects.requireNonNull(node, "node");
 		Node<V> tail = node;
 		while (true) {
-			Node<V> next = tail.getNode(key);
+			Node<V> next = tail.get(key);
 
 			if (next == null || next == node)
 				return tail;
@@ -106,7 +106,7 @@ public interface Nodes {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
 		Node<V> next = node;
-		while ((next = next.getNode(key)) != null)
+		while ((next = next.get(key)) != null)
 			if (next == node)
 				return true;
 		return false;
@@ -159,7 +159,7 @@ public interface Nodes {
 					//skip if null
 					if (next != null) {
 						//link the next node to the previous node
-						node.putNode(key, next);
+						node.put(key, next);
 
 						node = next;
 					}
@@ -217,7 +217,7 @@ public interface Nodes {
 					//skip if null
 					if (next != null) {
 						//link the next node to the previous node
-						node.putNode(key, next);
+						node.put(key, next);
 
 						node = next;
 					}
@@ -258,14 +258,14 @@ public interface Nodes {
 	static <V> void pop(@NotNull Key key, @NotNull Node<V> node) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
-		Node<V> next = node.getNode(key);
-		Node<V> previous = node.getNode(key.opposite());
+		Node<V> next = node.get(key);
+		Node<V> previous = node.get(key.opposite());
 
 		if (previous != null)
 			if (next == null)
 				previous.remove(key);
 			else
-				previous.putNode(key, next);
+				previous.put(key, next);
 		else if (next != null)
 			node.remove(key);
 	}
@@ -297,13 +297,13 @@ public interface Nodes {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
 		Objects.requireNonNull(other, "other");
-		Node<V> next = node.getNode(key);
-		Node<V> previous = node.getNode(key.opposite());
+		Node<V> next = node.get(key);
+		Node<V> previous = node.get(key.opposite());
 
 		if (previous != null)
-			previous.putNode(key, other);
+			previous.put(key, other);
 		if (next != null)
-			other.putNode(key, next);
+			other.put(key, next);
 	}
 
 	/**
@@ -332,10 +332,10 @@ public interface Nodes {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
 		Objects.requireNonNull(other, "other");
-		Node<V> next = node.putNode(key, other);
+		Node<V> next = node.put(key, other);
 
 		if (next != null)
-			other.putNode(key, next);
+			other.put(key, next);
 	}
 
 	/**
@@ -371,11 +371,11 @@ public interface Nodes {
 		Node<V> tail = Nodes.tail(key, other);
 
 		//put `other` after `node`
-		Node<V> old = node.putNode(key, head);
+		Node<V> old = node.put(key, head);
 
 		if (old != null)
 			//put `old` after the tail of `other`
-			tail.putNode(key, old);
+			tail.put(key, old);
 	}
 
 	//sort
@@ -1021,7 +1021,7 @@ public interface Nodes {
 
 			//forward
 			Node<V> next = node;
-			while ((next = next.getNode(key)) != null)
+			while ((next = next.get(key)) != null)
 				if (next == node)
 					//infinite loop detected
 					return size;
@@ -1032,7 +1032,7 @@ public interface Nodes {
 
 			//backwards
 			Node<V> prev = node;
-			while ((prev = prev.getNode(opposite)) != null)
+			while ((prev = prev.get(opposite)) != null)
 				//no need for infinite loop check
 				size++;
 
@@ -1074,14 +1074,14 @@ public interface Nodes {
 					return true;
 
 				Node<V> next = sole;
-				while ((next = next.getNode(key)) != null)
+				while ((next = next.get(key)) != null)
 					if (next == object)
 						return true;
 					else if (next == sole)
 						return false;
 
 				Node<V> prev = sole;
-				while ((prev = prev.getNode(opposite)) != null)
+				while ((prev = prev.get(opposite)) != null)
 					if (prev == object)
 						return true;
 					else if (prev == sole)
@@ -1117,7 +1117,7 @@ public interface Nodes {
 			Node<V> last = sole;
 			Node<V> prev = null;
 			while (true) {
-				Node<V> next = last.getNode(key);
+				Node<V> next = last.get(key);
 
 				if (next == null) {
 					if (last == sole)
@@ -1134,7 +1134,7 @@ public interface Nodes {
 						throw new UnsupportedOperationException("sole");
 
 					//~[S]...[X]~ => ~[S]...[X-1]~
-					prev.putNode(key, sole);
+					prev.put(key, sole);
 					return last;
 				}
 
@@ -1167,7 +1167,7 @@ public interface Nodes {
 			Node<V> first = sole;
 			Node<V> next = null;
 			while (true) {
-				Node<V> prev = first.getNode(opposite);
+				Node<V> prev = first.get(opposite);
 
 				if (prev == null) {
 					if (first == sole)
@@ -1184,7 +1184,7 @@ public interface Nodes {
 						throw new UnsupportedOperationException("sole");
 
 					//~[X]...[S]~ => ~[X+1]...[S]~
-					next.putNode(opposite, sole);
+					next.put(opposite, sole);
 					return first;
 				}
 
@@ -1287,17 +1287,17 @@ public interface Nodes {
 			//forward
 			Node<V> last = sole;
 			while (true) {
-				Node<V> next = last.getNode(key);
+				Node<V> next = last.get(key);
 
 				if (next == null) {
 					//...[S]...[X] => ...[S}...[X]-[node]
-					last.putNode(key, node);
+					last.put(key, node);
 					return;
 				}
 				if (next == sole) {
 					//~[S]...[X]~ => ~[S]...[X]-[node]~
-					last.putNode(key, node);
-					node.putNode(key, sole);
+					last.put(key, node);
+					node.put(key, sole);
 					return;
 				}
 
@@ -1327,17 +1327,17 @@ public interface Nodes {
 			//backwards
 			Node<V> first = sole;
 			while (true) {
-				Node<V> prev = first.getNode(opposite);
+				Node<V> prev = first.get(opposite);
 
 				if (prev == null) {
 					//[X]...[S] => [node]-[X]...[S}
-					first.putNode(opposite, node);
+					first.put(opposite, node);
 					return;
 				}
 				if (prev == sole) {
 					//~[X]...[S]~ => ~[node]-[X]...[S]~
-					first.putNode(opposite, node);
-					node.putNode(opposite, sole);
+					first.put(opposite, node);
+					node.put(opposite, sole);
 					return;
 				}
 
@@ -1429,7 +1429,7 @@ public interface Nodes {
 			//forward
 			Node<V> last = sole;
 			while (true) {
-				Node<V> next = last.getNode(key);
+				Node<V> next = last.get(key);
 
 				if (next == null || next == sole)
 					return last;
@@ -1455,7 +1455,7 @@ public interface Nodes {
 			//backward
 			Node<V> first = sole;
 			while (true) {
-				Node<V> prev = first.getNode(opposite);
+				Node<V> prev = first.get(opposite);
 
 				if (prev == null || prev == sole)
 					return first;
@@ -1536,21 +1536,21 @@ public interface Nodes {
 				//forward
 				prev = sole;
 				next = sole;
-				while ((next = next.getNode(key)) != null) {
+				while ((next = next.get(key)) != null) {
 					if (next == sole)
 						//loop detected
 						return false;
 
 					if (next == object) {
 						//node found!
-						Node<V> after = next.getNode(key);
+						Node<V> after = next.get(key);
 
 						if (after == null)
 							//end removal
 							prev.remove(key);
 						else
 							//pop removal
-							prev.putNode(key, after);
+							prev.put(key, after);
 
 						return true;
 					}
@@ -1562,21 +1562,21 @@ public interface Nodes {
 				//backwards
 				prev = sole;
 				next = sole;
-				while ((prev = prev.getNode(opposite)) != null) {
+				while ((prev = prev.get(opposite)) != null) {
 					if (prev == sole)
 						//loop detect (extra guard)
 						return false;
 
 					if (prev == object) {
 						//node found!
-						Node<V> before = next.getNode(opposite);
+						Node<V> before = next.get(opposite);
 
 						if (before == null)
 							//end removal
 							next.remove(opposite);
 						else
 							//pop removal
-							next.putNode(opposite, before);
+							next.put(opposite, before);
 
 						return true;
 					}
@@ -1698,7 +1698,7 @@ public interface Nodes {
 				throw new NoSuchElementException("next");
 
 			//the sole is always the last item.
-			this.next = next == sole ? null : next.getNode(key);
+			this.next = next == sole ? null : next.get(key);
 			this.previous = next;
 			return next;
 		}
@@ -1714,8 +1714,8 @@ public interface Nodes {
 			if (remove == sole)
 				throw new UnsupportedOperationException("sole");
 
-			Node<V> prev = remove.getNode(key);
-			Node<V> next = remove.getNode(key);
+			Node<V> prev = remove.get(key);
+			Node<V> next = remove.get(key);
 
 			if (prev != null)
 				if (next == null)
@@ -1723,7 +1723,7 @@ public interface Nodes {
 					prev.remove(key);
 				else
 					// ...[prev]-[remove]-[next]... => ...[prev]-[next]...
-					prev.putNode(key, next);
+					prev.put(key, next);
 			else if (next != null)
 				// [remove]-[next]... => [next]...
 				remove.remove(key);

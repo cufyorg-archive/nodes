@@ -103,7 +103,8 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 			this.linkSet = new AbstractSet<Link<V>>() {
 				@Override
 				public boolean contains(Object object) {
-					return HashNode.this.map.containsValue((Link<V>) object);
+					return object instanceof Link &&
+						   HashNode.this.map.containsValue(object);
 				}
 
 				@Override
@@ -192,7 +193,7 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 
 	@Nullable
 	@Override
-	public Node<V> putNode(@NotNull /*opposite*/ Key key, @NotNull Node<V> node) {
+	public Node<V> put(@NotNull Key key, @NotNull Node<V> node) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
 		Key opposite = key.opposite();

@@ -106,16 +106,6 @@ import java.util.Set;
  * @since 0.0.1 ~2021.04.18
  */
 public interface Node<V> {
-	/*
-	# Map have, Node does not
-	- putAll(Node) ~ removes all the links on the put node
-	- defaults? ~ too lazy -_-"
-
-	# Q/A
-	Q- Why not extend Map?
-	A- What about `equals`, `hashCode()` or even `toString()` ?
-	 */
-
 	// Object
 
 	/**
@@ -235,25 +225,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(pure = true)
-	Node<V> getNode(@NotNull Key key);
-
-	/**
-	 * Remove all the links pointing to this node and the given {@code node} from this
-	 * node.
-	 * <br>
-	 * The removal will only occur on this node. So, the links will not be removed from
-	 * the given {@code node}. In other words, the given {@code node} will retain the
-	 * links pointing to this node.
-	 *
-	 * @param node the node to remove all the links between it and this node.
-	 * @return true, if this node changed due to this method call.
-	 * @throws NullPointerException          if the given {@code node} is null.
-	 * @throws UnsupportedOperationException if this node refuses to remove a link between
-	 *                                       it and the given {@code node}.
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@Contract(mutates = "this,param")
-	boolean removeNode(@NotNull Node<V> node);
+	Node<V> get(@NotNull Key key);
 
 	/**
 	 * Create a new relation between this node and the given {@code node}.
@@ -292,7 +264,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(mutates = "this,param2")
-	Node<V> putNode(@NotNull Key key, @NotNull Node<V> node);
+	Node<V> put(@NotNull Key key, @NotNull Node<V> node);
 
 	/**
 	 * A non-null view of the nodes related to this node.
@@ -370,8 +342,8 @@ public interface Node<V> {
 	 * Remove the link with the opposite of the given {@code key} from this node.
 	 *
 	 * @param key the opposite key of the link to be removed
-	 * @return the value of the node of the opposite of the link with the opposite of the
-	 * 		given {@code key} that has been removed. Or {@code null} if no link was removed.
+	 * @return the node of the opposite of the link with the opposite of the given {@code
+	 * 		key} that has been removed. Or {@code null} if no link was removed.
 	 * @throws NullPointerException          if the given {@code key} is null.
 	 * @throws UnsupportedOperationException if this node refuses to remove the link with
 	 *                                       the opposite of the given {@code key}.
@@ -379,7 +351,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(mutates = "this")
-	V remove(@NotNull Key key);
+	Node<V> remove(@NotNull Key key);
 
 	/**
 	 * A non-null view of the opposite keys of the links pointing to this node.
@@ -654,45 +626,5 @@ public interface Node<V> {
 		@Nullable
 		@Contract(mutates = "this,param")
 		Node<V> setNode(@NotNull Node<V> node);
-
-		/**
-		 * Return the value of the node this link is pointing to.
-		 *
-		 * @return the value of the node this link is pointing to. Or {@code null} if this
-		 * 		link is not pointing to a node. {@code null} also might indicate that the
-		 * 		node has its value set to {@code null}.
-		 * @since 0.0.1 ~2021.04.22
-		 */
-		@Nullable
-		@Contract(pure = true)
-		default V getValue() {
-			Node<V> node = this.getNode();
-			return node == null ? null : node.get();
-		}
-
-		/**
-		 * Set the value of the node this link is pointing to to the given {@code value}.
-		 *
-		 * @param value the value to be set.
-		 * @return the previous value of the node this link is pointing to.
-		 * @throws IllegalStateException         if this link is currently pointing to
-		 *                                       nothing.
-		 * @throws NullPointerException          if the given {@code value} is null and
-		 *                                       the node does not support null value.
-		 * @throws IllegalArgumentException      if the node rejected the given {@code
-		 *                                       value}.
-		 * @throws ClassCastException            if the given {@code value} is of an
-		 *                                       inappropriate type for the node.
-		 * @throws UnsupportedOperationException if the node refused to change its value.
-		 * @since 0.0.1 ~2021.04.22
-		 */
-		@Nullable
-		@Contract(mutates = "this")
-		default V setValue(@Nullable V value) {
-			Node<V> node = this.getNode();
-			if (node == null)
-				throw new IllegalStateException("setValue");
-			return node.set(value);
-		}
 	}
 }

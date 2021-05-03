@@ -33,7 +33,7 @@ import java.util.*;
  * support the {@code remove} method.
  * <br>
  * To implement a modifiable node, the programmer must additionally override this class's
- * {@link #putLink(Link)}, {@link #putNode(Key, Node)}, {@link #put(Key, V)} methods
+ * {@code linkSet().add(Link)}, {@link #putNode(Key, Node)}, {@link #put(Key, V)} methods
  * (which otherwise throws an {@link UnsupportedOperationException}), and the iterator
  * returned by {@code linkSet().iterator()} must additionally implement its {@code remove}
  * method.
@@ -142,83 +142,6 @@ public abstract class AbstractNode<V> implements Node<V> {
 	}
 
 	// Links
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @implSpec This implementation iterates over {@code linkSet()} searching for the
-	 * 		given {@code link}. If such link is found, {@code true} is returned. If the
-	 * 		iteration terminates without finding such a link, {@code false} is returned. Note
-	 * 		that this implementation requires linear time in the size of the node.
-	 * @since 0.0.1 ~2021.04.22
-	 */
-	@Override
-	public boolean containsLink(@NotNull Link<V> link) {
-		Objects.requireNonNull(link, "link");
-		for (Link<V> l : this.linkSet())
-			if (l == link)
-				return true;
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @implSpec this implementation iterates over {@code linkSet()} searching for a
-	 * 		link with the opposite of the given {@code key}. If such link is found, the found
-	 * 		link will be returned. If the iteration terminates without finding such a link,
-	 *        {@code null} is returned. Note that this implementation requires linear time in
-	 * 		the size of this node.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Nullable
-	@Override
-	public Link<V> getLink(@NotNull Key key) {
-		Objects.requireNonNull(key, "key");
-		for (Link<V> l : this.linkSet())
-			if (l.getKey().equals(key))
-				return l;
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @implSpec this implementation iterates over {@code linkSet()} searching for the
-	 * 		given {@code link}. If the link was found, the link with be removed from the
-	 * 		collection (and this node) with the iterator's {@code remove} operation, and
-	 *        {@code true} will be returned. If the iteration terminates without finding such a
-	 * 		link, {@code false} is returned. Note that this implementation requires linear
-	 * 		time in the size of the node.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Override
-	public boolean removeLink(@NotNull Link<V> link) {
-		Objects.requireNonNull(link, "link");
-		Iterator<Link<V>> i = this.linkSet().iterator();
-		while (i.hasNext()) {
-			Link<V> l = i.next();
-
-			if (l == link) {
-				i.remove();
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @implSpec this implementation always throws an {@link UnsupportedOperationException}.
-	 * @since 0.0.1 ~2021.04.23
-	 */
-	@Nullable
-	@Override
-	public Link<V> putLink(@NotNull Link<V> link) {
-		throw new UnsupportedOperationException("put");
-	}
 
 	@NotNull
 	@Override
@@ -925,8 +848,8 @@ public abstract class AbstractNode<V> implements Node<V> {
 		public Node<V> removeNode() {
 			Node<V> n = this.node;
 
-			if (n != null && n.containsLink(this))
-				n.removeLink(this);
+			if (n != null && n.linkSet().contains(this))
+				n.linkSet().remove(this);
 			else
 				this.node = null;
 
@@ -939,8 +862,8 @@ public abstract class AbstractNode<V> implements Node<V> {
 			Objects.requireNonNull(node, "node");
 			Node<V> n = this.node;
 
-			if (n != null && n != node || !node.containsLink(this))
-				node.putLink(this);
+			if (n != null && n != node || !node.linkSet().contains(this))
+				node.linkSet().add(this);
 			else
 				this.node = node;
 

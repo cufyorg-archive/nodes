@@ -89,8 +89,8 @@ public class NodeTest {
 
 		//put link
 		Link<String> link = new SimpleLink<>(Compass.NORTH);
-		node.putLink(link);
-		new HashNode<>("S").putLink(link.getOpposite());
+		node.linkSet().add(link);
+		new HashNode<>("S").linkSet().add(link.getOpposite());
 
 		assertSame(
 				node,
@@ -108,8 +108,8 @@ public class NodeTest {
 		Node<String> other = new HashNode<>("S");
 		Link<String> link = new SimpleLink<>(Compass.NORTH);
 
-		node.putLink(link);
-		other.putLink(link.getOpposite());
+		node.linkSet().add(link);
+		other.linkSet().add(link.getOpposite());
 
 		//containsKey
 		assertTrue(
@@ -123,11 +123,11 @@ public class NodeTest {
 
 		//containsLink
 		assertTrue(
-				node.containsLink(link),
+				node.linkSet().contains(link),
 				"containsLink is looking at the wrong side"
 		);
 		assertFalse(
-				node.containsLink(link.getOpposite()),
+				node.linkSet().contains(link.getOpposite()),
 				"containsLink is NOT seeing the mirror"
 		);
 

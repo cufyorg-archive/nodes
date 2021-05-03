@@ -58,8 +58,7 @@ import java.util.Set;
  *     the user will not be confused by the node's side links and the relatives side of
  *     the links. For example, calling {@code node.containsKey(LEFT)} will check if this
  *     node has a node left to it instead of checking if the node is on the left of
- *     another node. You will see a comment containing {@code opposite} before an opposite
- *     key parameter.
+ *     another node.
  * </div>
  * <div style="padding: 10px">
  *     <h3>One to Many / Many to Many relations</h3>
@@ -207,118 +206,6 @@ public interface Node<V> {
 	// Links
 
 	/**
-	 * Check if this node has the given {@code link} (same reference).
-	 *
-	 * @param link the link to be checked.
-	 * @return true, if the given {@code link} is pointing to this node.
-	 * @throws NullPointerException if the given {@code link} is null.
-	 * @since 0.0.1 ~2021.04.20
-	 */
-	@Contract(pure = true)
-	boolean containsLink(@NotNull Link<V> link);
-
-	/**
-	 * Get the link pointing to this node with the given {@code key}.
-	 *
-	 * @param key the key of the link.
-	 * @return the link pointing to this node with the given {@code key}. Or {@code null}
-	 * 		if no link in this node has the given {@code key}.
-	 * @throws NullPointerException if the given {@code key} is null.
-	 * @since 0.0.1 ~2021.04.20
-	 */
-	@Nullable
-	@Contract(pure = true)
-	Link<V> getLink(@NotNull Key key);
-
-	/**
-	 * Remove the given {@code link} from this node.
-	 * <br>
-	 * This method will remove the given {@code link} from this then remove this from the
-	 * given {@code link}.
-	 * <br>
-	 * If this node rejected to remove the given {@code link}. Then, an exception will be
-	 * thrown with nothing changed.
-	 * <br>
-	 * The method might {@link Link#removeNode() remove the node} of the given {@code
-	 * link} after doing its work when the given {@code link} is pointing to this. This
-	 * behaviour insures strict relations.
-	 * <br><br>
-	 * Basic Implementation:
-	 * <pre>
-	 *     K key = link.getKey();
-	 *     Link l = this.map.get(key);
-	 *     if (l == link) {
-	 *          this.map.remove(key);
-	 *          if (link.getNode() == this)
-	 *               link.removeNode();
-	 *          return true;
-	 *     }
-	 *     return false;
-	 * </pre>
-	 *
-	 * @param link the link to be removed.
-	 * @return true, if this node changed due to this method call.
-	 * @throws NullPointerException          if the given {@code link} is null.
-	 * @throws UnsupportedOperationException if this node refuses to remove the given
-	 *                                       {@code link}.
-	 * @since 0.0.1 ~2021.04.18
-	 */
-	@Contract(mutates = "this,param")
-	boolean removeLink(@NotNull Link<V> link);
-
-	/**
-	 * Put the given {@code link} to point to this node.
-	 * <br>
-	 * This method will remove the node the given {@code link} is pointing to from the
-	 * given {@code link} then remove this node from the current link with the same key as
-	 * the given {@code link} from both sides then put the given {@code link} to this node
-	 * then set this node to the given {@code link}.
-	 * <br>
-	 * If the node the given {@code link} is pointing to rejected to remove the given
-	 * {@code link} or if this node rejected to put the given {@code link}. Then, an
-	 * exception will be thrown with nothing changed.
-	 * <br>
-	 * The method might {@link Link#removeNode() remove} the node of the given {@code
-	 * link} before its work when the given {@code link} is pointing to neither this node
-	 * nor {@code null}. Also, it might {@link Link#setNode(Node) set} this node to the
-	 * given {@code link} after its work when the given {@code link} is not pointing to
-	 * this. This behaviour insures strict relations.
-	 * <br><br>
-	 * Basic Implementation:
-	 * <pre>
-	 *     K key = link.getKey();
-	 *     Node n = link.getNode();
-	 *     if (n != null && n != this)
-	 *          //be polite and remove the rival node first
-	 *          link.removeNode();
-	 *     Link l = this.map.put(key, link);
-	 *     if (l != null && l != link)
-	 *          //now we can abandon our friend
-	 *          l.removeNode();
-	 *     if (link.getNode() != this)
-	 *          //hey new fiend, glad to meet you
-	 *          link.setNode(this);
-	 *     return l;
-	 * </pre>
-	 *
-	 * @param link the link to be put.
-	 * @return the previous link pointing to this node with the same key as the given
-	 *        {@code link}. Or {@code null} if none.
-	 * @throws NullPointerException          if the given {@code link} is null.
-	 * @throws IllegalArgumentException      if this node rejected the given {@code link};
-	 *                                       if this node rejected the key of the given
-	 *                                       {@code link}.
-	 * @throws UnsupportedOperationException if this node refused to put the given {@code
-	 *                                       link}; If current node of the given {@code
-	 *                                       link} refused to remove the given {@code
-	 *                                       link}.
-	 * @since 0.0.1 ~2021.04.18
-	 */
-	@Nullable
-	@Contract(mutates = "this,param")
-	Link<V> putLink(@NotNull Link<V> link);
-
-	/**
 	 * A non-null view of the links pointing to this node.
 	 * <br>
 	 * The returned set is a reflection of this node. So, any changes to this node will be
@@ -367,7 +254,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(pure = true)
-	Node<V> getNode(@NotNull /*opposite*/ Key key);
+	Node<V> getNode(@NotNull Key key);
 
 	/**
 	 * Remove all the links pointing to this node and the given {@code node} from this
@@ -399,10 +286,10 @@ public interface Node<V> {
 	 * have a new relation with the opposite of the given {@code key}. Then, an exception
 	 * will be thrown with nothing changed.
 	 * <br>
-	 * The method might {@link Node#putLink(Link) put} the opposite of the newly created
-	 * link to the given {@code node} and {@link Link#removeLink(Link) remove} this node
-	 * from the previous link in this node with the opposite of the given {@code key} and
-	 * {@link Link#setNode(Node) set} this node to the newly created link.
+	 * The method might {@code linkSet().add(Link)} the opposite of the newly created link
+	 * to the given {@code node} and {@code linkSet().remove(Link)} this node from the
+	 * previous link in this node with the opposite of the given {@code key} and {@link
+	 * Link#setNode(Node) set} this node to the newly created link.
 	 *
 	 * @param key  the key of the new relation (its opposite is the side of this node).
 	 * @param node the node for this node to have a relation with with the given {@code
@@ -424,7 +311,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(mutates = "this,param2")
-	Node<V> putNode(@NotNull /*opposite*/ Key key, @NotNull Node<V> node);
+	Node<V> putNode(@NotNull Key key, @NotNull Node<V> node);
 
 	/**
 	 * A non-null view of the nodes related to this node.
@@ -496,7 +383,7 @@ public interface Node<V> {
 	 * @since 0.0.1 ~2021.04.22
 	 */
 	@Contract(pure = true)
-	boolean containsKey(@NotNull /*opposite*/ Key key);
+	boolean containsKey(@NotNull Key key);
 
 	/**
 	 * Check if this node has a relation (link) between it and a node with the given
@@ -524,7 +411,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(pure = true)
-	V get(@NotNull /*opposite*/ Key key);
+	V get(@NotNull Key key);
 
 	/**
 	 * Create a new relation of the given {@code key} to a new node with the given {@code
@@ -565,7 +452,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(mutates = "this")
-	V put(@NotNull /*opposite*/ Key key, @Nullable V value);
+	V put(@NotNull Key key, @Nullable V value);
 
 	/**
 	 * Remove the link with the opposite of the given {@code key} from this node.
@@ -580,7 +467,7 @@ public interface Node<V> {
 	 */
 	@Nullable
 	@Contract(mutates = "this")
-	V remove(@NotNull /*opposite*/ Key key);
+	V remove(@NotNull Key key);
 
 	/**
 	 * A non-null view of the opposite keys of the links pointing to this node.
@@ -834,9 +721,9 @@ public interface Node<V> {
 		 * If the current node rejected to remove this link. Then, an exception will be
 		 * thrown with nothing changed.
 		 * <br>
-		 * The method might {@link Node#removeLink(Link) remove} this link from the
-		 * current node instead of doing its work when the current node does have this
-		 * link. This behaviour insures strict relations.
+		 * The method might {@code linkSet().remove(Link)} this link from the current node
+		 * instead of doing its work when the current node does have this link. This
+		 * behaviour insures strict relations.
 		 * <br><br>
 		 * Basic Implementation:
 		 * <pre>
@@ -868,7 +755,7 @@ public interface Node<V> {
 		 * rejected to put this link. Then, an exception will be thrown with nothing
 		 * changed.
 		 * <br>
-		 * The method might {@link Node#putLink(Link) put} this link to the given {@code
+		 * The method might {@code linkSet().add(Link)} this link to the given {@code
 		 * node} instead of doing its work when the current node is not the given {@code
 		 * node} neither {@code null} or the given {@code node} does have this link. This
 		 * behaviour insures strict relations.

@@ -15,6 +15,7 @@
  */
 package cufy.util;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,34 +95,6 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 
 	// Links
 
-	@Nullable
-	@Override
-	public Link<V> putLink(@NotNull Link<V> link) {
-		Objects.requireNonNull(link, "link");
-		Key key = link.getKey();
-
-		//remove the node on `link`
-		Node<V> n = link.getNode();
-
-		if (n != null && n != this)
-			//only if necessary
-			link.removeNode();
-
-		//replace the link in this with `link`
-		Link<V> l = this.map.put(key, link);
-
-		if (l != null && l != link)
-			//only if necessary
-			l.removeNode();
-
-		//set this to `link`
-		if (link.getNode() != this)
-			//only if necessary
-			link.setNode(this);
-
-		return l;
-	}
-
 	@NotNull
 	@Override
 	public Set<Link<V>> linkSet() {
@@ -130,7 +103,7 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 			this.linkSet = new AbstractSet<Link<V>>() {
 				@Override
 				public boolean contains(Object object) {
-					return HashNode.this.containsLink((Link<V>) object);
+					return HashNode.this.map.containsValue((Link<V>) object);
 				}
 
 				@Override
@@ -179,6 +152,35 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 				public int size() {
 					return links.size();
 				}
+
+				@SuppressWarnings("ConstantConditions")
+				@Contract(mutates = "this,param")
+				@Override
+				public boolean add(@NotNull Link<V> link) {
+					Objects.requireNonNull(link, "link");
+					Key key = link.getKey();
+
+					//remove the node on `link`
+					Node<V> n = link.getNode();
+
+					if (n != null && n != HashNode.this)
+						//only if necessary
+						link.removeNode();
+
+					//replace the link in this with `link`
+					Link<V> l = HashNode.this.map.put(key, link);
+
+					if (l != null && l != link)
+						//only if necessary
+						l.removeNode();
+
+					//set this to `link`
+					if (link.getNode() != HashNode.this)
+						//only if necessary
+						link.setNode(HashNode.this);
+
+					return true;
+				}
 			};
 		}
 
@@ -201,7 +203,7 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 		//see if it can be recycled
 		if (l != null && l.getOpposite().getNode() == null) {
 			//no need to create new link
-			node.putLink(l.getOpposite());
+			node.linkSet().add(l.getOpposite());
 			return null;
 		}
 
@@ -209,7 +211,7 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 		Link<V> link = new SimpleLink<>(opposite);
 
 		//add its opposite to `node`
-		node.putLink(link.getOpposite());
+		node.linkSet().add(link.getOpposite());
 
 		//add it to this
 		this.map.put(opposite, link);
@@ -260,7 +262,7 @@ public class HashNode<V> extends AbstractNode<V> implements Serializable {
 			n = new HashNode<>();
 
 			//add the opposite link to `node`
-			n.putLink(l.getOpposite());
+			n.linkSet().add(l.getOpposite());
 		}
 
 		//set the value to the node

@@ -34,6 +34,7 @@ public interface Hexagon extends Tetragon {
 	 */
 	@NotNull
 	Hexagon BACK = new Hexagon() {
+		@NotNull
 		@Override
 		public String toString() {
 			return "BACK";
@@ -52,6 +53,7 @@ public interface Hexagon extends Tetragon {
 	 */
 	@NotNull
 	Hexagon FRONT = new Hexagon() {
+		@NotNull
 		@Override
 		public String toString() {
 			return "FRONT";

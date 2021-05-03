@@ -34,6 +34,7 @@ public interface Digon extends Key {
 	 */
 	@NotNull
 	Digon START = new Digon() {
+		@NotNull
 		@Override
 		public String toString() {
 			return "START";
@@ -52,6 +53,7 @@ public interface Digon extends Key {
 	 */
 	@NotNull
 	Digon END = new Digon() {
+		@NotNull
 		@Override
 		public String toString() {
 			return "END";

@@ -34,6 +34,7 @@ public interface Tetragon extends Digon {
 	 */
 	@NotNull
 	Tetragon BOTTOM = new Tetragon() {
+		@NotNull
 		@Override
 		public String toString() {
 			return "BOTTOM";
@@ -52,6 +53,7 @@ public interface Tetragon extends Digon {
 	 */
 	@NotNull
 	Tetragon TOP = new Tetragon() {
+		@NotNull
 		@Override
 		public String toString() {
 			return "TOP";

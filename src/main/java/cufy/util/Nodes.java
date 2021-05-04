@@ -130,11 +130,8 @@ public interface Nodes {
 	 * @throws UnsupportedOperationException if a node refused to perform a necessary
 	 *                                       operation.
 	 * @since 0.0.4 ~2021.05.03
-	 * @deprecated specification might change.
 	 */
-	@SuppressWarnings("OverloadedVarargsMethod")
 	@SafeVarargs
-	@Deprecated
 	static <V> void concat(@NotNull Key key, Node<V> @NotNull ... nodes) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(nodes, "nodes");
@@ -187,10 +184,7 @@ public interface Nodes {
 	 * @throws UnsupportedOperationException if a node refused to perform a necessary
 	 *                                       operation.
 	 * @since 0.0.4 ~2021.05.03
-	 * @deprecated specification might change.
 	 */
-	@SuppressWarnings("DeprecatedIsStillUsed")
-	@Deprecated
 	static <V> void concat(@NotNull Key key, @NotNull Iterable<Node<V>> nodes) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(nodes, "nodes");
@@ -488,6 +482,7 @@ public interface Nodes {
 	@NotNull
 	@UnmodifiableView
 	@Contract(value = "_->new", pure = true)
+	@Deprecated
 	static <V> Node<V> unmodifiableNode(@NotNull Node<V> node) {
 		return new UnmodifiableNode<>(node);
 	}
@@ -504,6 +499,7 @@ public interface Nodes {
 	@NotNull
 	@UnmodifiableView
 	@Contract(value = "_->new", pure = true)
+	@Deprecated
 	static <V> Link<V> unmodifiableLink(@NotNull Link<V> link) {
 		Objects.requireNonNull(link, "link");
 		return new UnmodifiableLink<>(link);
@@ -519,6 +515,7 @@ public interface Nodes {
 	 * @version 0.0.1
 	 * @since 0.0.1 ~2021.04.28
 	 */
+	@Deprecated
 	class UnmodifiableLink<V> implements Link<V>, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2267321588558427335L;
@@ -667,6 +664,7 @@ public interface Nodes {
 	 * @version 0.0.1
 	 * @since 0.0.1 ~2021.04.28
 	 */
+	@Deprecated
 	class UnmodifiableNode<V> extends AbstractNode<V> implements Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 624657152304453632L;
@@ -776,6 +774,7 @@ public interface Nodes {
 	 */
 	@NotNull
 	@Contract(value = "_->new", mutates = "param")
+	@Deprecated
 	static <V> Node<V> singletonNode(@NotNull Link<V> link) {
 		return new SingletonNode<>(link);
 	}
@@ -789,6 +788,7 @@ public interface Nodes {
 	 * @version 0.0.1
 	 * @since 0.0.1 ~2021.04.28
 	 */
+	@Deprecated
 	class SingletonNode<V> extends AbstractNode<V> implements Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 2512099034526153652L;

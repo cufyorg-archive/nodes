@@ -216,6 +216,94 @@ public class NodesTest {
 		);
 	}
 
+	@Test
+	public void asDeque_behaviour() {
+		Key key = Digon.START;
+		Node<String> sole = new HashNode<>("sole");
+		Node<String> x = new HashNode<>("x");
+		Node<String> y = new HashNode<>("y");
+
+		Deque<Node<String>> deque = Nodes.asDeque(key, sole);
+
+		//Singular
+		Nodes.concat(key, sole);
+		assertSame(
+				sole,
+				deque.getFirst(),
+				"Singular first must be sole"
+		);
+		assertSame(
+				sole,
+				deque.getLast(),
+				"Singular last must be sole"
+		);
+
+		//Singular Infinite
+		Nodes.concat(key, sole, sole);
+		assertSame(
+				sole,
+				deque.getFirst(),
+				"Singular infinite first must be sole"
+		);
+		assertSame(
+				sole,
+				deque.getLast(),
+				"Singular infinite last must be sole"
+		);
+
+		//Binary
+		Nodes.concat(key, sole, x);
+		assertSame(
+				sole,
+				deque.getFirst(),
+				"Binary first must be sole"
+		);
+		assertSame(
+				x,
+				deque.getLast(),
+				"Binary last must be X"
+		);
+
+		//Binary Infinite
+		Nodes.concat(key, sole, x, sole);
+		assertSame(
+				x,
+				deque.getFirst(),
+				"Binary infinite first must be X"
+		);
+		assertSame(
+				x,
+				deque.getLast(),
+				"Binary infinite last must be X"
+		);
+
+		//Trinary
+		Nodes.concat(key, sole, x, y);
+		assertSame(
+				sole,
+				deque.getFirst(),
+				"Trinary first must be sole"
+		);
+		assertSame(
+				y,
+				deque.getLast(),
+				"Trinary last must be Y"
+		);
+
+		//Trinary infinite
+		Nodes.concat(key, sole, x, y, sole);
+		assertSame(
+				x,
+				deque.getFirst(),
+				"Trinary infinite first must be X"
+		);
+		assertSame(
+				y,
+				deque.getLast(),
+				"Trinary infinite last must be Y"
+		);
+	}
+
 	//unmodifiable
 
 	@Test

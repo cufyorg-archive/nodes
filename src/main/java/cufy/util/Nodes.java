@@ -119,6 +119,10 @@ public interface Nodes {
 	 * array.
 	 * <br>
 	 * Null nodes are skipped (as if they does not exist).
+	 * <br>
+	 * If any node involved rejected to do an operation, the method will fail with no
+	 * guarantee to what node has what relation with respect to the given {@code key} or
+	 * its opposite.
 	 *
 	 * @param key   the key to rearrange the nodes with.
 	 * @param nodes an array containing the nodes to be rearranged.
@@ -132,6 +136,7 @@ public interface Nodes {
 	 * @since 0.0.4 ~2021.05.03
 	 */
 	@SafeVarargs
+	//fail -> undefined
 	static <V> void concat(@NotNull Key key, Node<V> @NotNull ... nodes) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(nodes, "nodes");
@@ -173,6 +178,10 @@ public interface Nodes {
 	 * to follow the same order as they are returned from the iterator.
 	 * <br>
 	 * Null nodes are skipped (as if they does not exist).
+	 * <br>
+	 * If any node involved rejected to do an operation, the method will fail with no
+	 * guarantee to what node has what relation with respect to the given {@code key} or
+	 * its opposite.
 	 *
 	 * @param key   the key to rearrange the nodes with.
 	 * @param nodes an iterable containing the nodes to be rearranged.
@@ -185,6 +194,7 @@ public interface Nodes {
 	 *                                       operation.
 	 * @since 0.0.4 ~2021.05.03
 	 */
+	//fail -> undefined
 	static <V> void concat(@NotNull Key key, @NotNull Iterable<Node<V>> nodes) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(nodes, "nodes");
@@ -230,7 +240,7 @@ public interface Nodes {
 	 * This method will link the node previous to the given {@code node} to the node next
 	 * to it with respect to the given {@code key}.
 	 * <br>
-	 * If any exception occurs. The exception will fall throw this method with nothing
+	 * If any node involved rejected to do an operation, the method will fail with nothing
 	 * changed.
 	 *
 	 * @param key  the key of the chain to pop the node from.
@@ -245,10 +255,9 @@ public interface Nodes {
 	 *                                       node.getNode(key.opposite())} refused to
 	 *                                       perform a required operation.
 	 * @since 0.0.3 ~2021.04.29
-	 * @deprecated specification might change.
 	 */
 	@Contract(mutates = "param2")
-	@Deprecated
+	//fail -> safe
 	static <V> void pop(@NotNull Key key, @NotNull Node<V> node) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
@@ -267,6 +276,10 @@ public interface Nodes {
 	/**
 	 * Set the given {@code other} node to be at the place of the given {@code node} with
 	 * respect to the given {@code key}.
+	 * <br>
+	 * If any node involved rejected to do an operation, the method will fail with no
+	 * guarantee to what node has what relation with respect to the given {@code key} or
+	 * its opposite.
 	 *
 	 * @param key   the key of the chain to replace the given {@code node} with the given
 	 *              {@code other} at.
@@ -283,11 +296,10 @@ public interface Nodes {
 	 *                                       or {@code node.getNode(key.opposite())}
 	 *                                       refused to perform a required * operation.
 	 * @since 0.0.4 ~2021.05.03
-	 * @deprecated specification might change.
 	 */
 	@Contract(mutates = "param2,param3")
-	@Deprecated
-	static <V> void set(@NotNull Key key, @NotNull Node<V> node, @NotNull Node<V> other) {
+	//fail -> undefined
+	static <V> void replace(@NotNull Key key, @NotNull Node<V> node, @NotNull Node<V> other) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
 		Objects.requireNonNull(other, "other");
@@ -304,6 +316,10 @@ public interface Nodes {
 	 * Push the given {@code other} node after the given {@code node} with respect to the
 	 * given {@code key}. The previous node after the given {@code node} will be after the
 	 * given {@code other} node.
+	 * <br>
+	 * If any node involved rejected to do an operation, the method will fail with no
+	 * guarantee to what node has what relation with respect to the given {@code key} or
+	 * its opposite.
 	 *
 	 * @param key   the key to where to push the {@code other} node.
 	 * @param node  the node to push the {@code other} node after.
@@ -318,11 +334,10 @@ public interface Nodes {
 	 *                                       {@code other} refused to perform a required
 	 *                                       operation.
 	 * @since 0.0.3 ~2021.04.28
-	 * @deprecated specification might change.
 	 */
 	@Contract(mutates = "param2,param3")
-	@Deprecated
-	static <V> void add(@NotNull Key key, @NotNull Node<V> node, @NotNull Node<V> other) {
+	//fail -> undefined
+	static <V> void insert(@NotNull Key key, @NotNull Node<V> node, @NotNull Node<V> other) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
 		Objects.requireNonNull(other, "other");
@@ -336,6 +351,10 @@ public interface Nodes {
 	 * Push the head of the given {@code other} node after the given {@code node} with
 	 * respect to the given {@code key}. The previous node after the given {@code node}
 	 * will be after the tail of the given {@code other} node.
+	 * <br>
+	 * If any node involved rejected to do an operation, the method will fail with no
+	 * guarantee to what node has what relation with respect to the given {@code key} or
+	 * its opposite.
 	 *
 	 * @param key   the key to where to push the {@code other} node.
 	 * @param node  the node to push the {@code other} node after.
@@ -352,11 +371,10 @@ public interface Nodes {
 	 *                                       Nodes.tail(other)} refused to perform a
 	 *                                       required operation.
 	 * @since 0.0.3 ~2021.04.28
-	 * @deprecated specification might change.
 	 */
 	@Contract(mutates = "param2,param3")
-	@Deprecated
-	static <V> void addAll(@NotNull Key key, @NotNull Node<V> node, @NotNull Node<V> other) {
+	//fail -> undefined
+	static <V> void insertAll(@NotNull Key key, @NotNull Node<V> node, @NotNull Node<V> other) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
 		Objects.requireNonNull(other, "other");
@@ -377,6 +395,10 @@ public interface Nodes {
 	/**
 	 * Sort the relatives of the given {@code node} with respect to the given {@code key}
 	 * using the given {@code comparator}.
+	 * <br>
+	 * If any node involved rejected to do an operation, the method will fail with no
+	 * guarantee to what node has what relation with respect to the given {@code key} or
+	 * its opposite.
 	 *
 	 * @param key        the key to follow.
 	 * @param node       the node to sort its relatives.
@@ -390,6 +412,7 @@ public interface Nodes {
 	 *                                       operation.
 	 * @since 0.0.4 ~2021.05.03
 	 */
+	//fail -> undefined
 	static <V> void sort(@NotNull Key key, @NotNull Node<V> node, @NotNull Comparator<Node<V>> comparator) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
@@ -408,6 +431,10 @@ public interface Nodes {
 	/**
 	 * Sort the relatives of the given {@code node} with respect to the given {@code key}
 	 * by the natural order of their values.
+	 * <br>
+	 * If any node involved rejected to do an operation, the method will fail with no
+	 * guarantee to what node has what relation with respect to the given {@code key} or
+	 * its opposite.
 	 *
 	 * @param key  the key to follow.
 	 * @param node the node to sort its relatives.
@@ -421,6 +448,7 @@ public interface Nodes {
 	 *                                       operation.
 	 * @since 0.0.4 ~2021.05.03
 	 */
+	//fail -> undefined
 	static <V extends Comparable<? super V>> void sort(@NotNull Key key, @NotNull Node<V> node) {
 		Objects.requireNonNull(key, "key");
 		Objects.requireNonNull(node, "node");
@@ -945,7 +973,10 @@ public interface Nodes {
 	 * @version 0.0.4
 	 * @since 0.0.4 ~2021.04.29
 	 */
-	class NodeDeque<V> extends AbstractQueue<Node<V>> implements Deque<Node<V>> {
+	class NodeDeque<V> extends AbstractQueue<Node<V>> implements Deque<Node<V>>, Serializable {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -6946593353948527459L;
+
 		/**
 		 * The key of the chain the {@link #node} is in and this deque is following.
 		 *
@@ -1518,7 +1549,7 @@ public interface Nodes {
 
 		//remove
 
-		@SuppressWarnings({"DuplicatedCode", "OverlyComplexMethod", "OverlyLongMethod"})
+		@SuppressWarnings({"DuplicatedCode", "OverlyLongMethod"})
 		@Contract(value = "null->false;", mutates = "this,param")
 		@Override
 		public boolean remove(@Nullable Object object) {

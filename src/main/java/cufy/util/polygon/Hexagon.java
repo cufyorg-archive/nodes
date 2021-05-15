@@ -34,6 +34,9 @@ public interface Hexagon extends Tetragon {
 	 */
 	@NotNull
 	Hexagon BACK = new Hexagon() {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 8987665102672994394L;
+
 		@NotNull
 		@Override
 		public String toString() {
@@ -53,6 +56,9 @@ public interface Hexagon extends Tetragon {
 	 */
 	@NotNull
 	Hexagon FRONT = new Hexagon() {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -6360589989047071325L;
+
 		@NotNull
 		@Override
 		public String toString() {

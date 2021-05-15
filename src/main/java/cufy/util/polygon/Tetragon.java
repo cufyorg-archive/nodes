@@ -28,41 +28,47 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("InterfaceMayBeAnnotatedFunctional")
 public interface Tetragon extends Digon {
 	/**
-	 * The side at the end of the tetragon. (Y-)
-	 *
-	 * @since 0.0.2 ~2021.04.28
-	 */
-	@NotNull
-	Tetragon BOTTOM = new Tetragon() {
-		@NotNull
-		@Override
-		public String toString() {
-			return "BOTTOM";
-		}
-
-		@NotNull
-		@Override
-		public Key opposite() {
-			return Tetragon.TOP;
-		}
-	};
-	/**
 	 * The side at the top of the tetragon. (Y+)
 	 *
 	 * @since 0.0.2 ~2021.04.28
 	 */
 	@NotNull
 	Tetragon TOP = new Tetragon() {
-		@NotNull
-		@Override
-		public String toString() {
-			return "TOP";
-		}
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -990754514165955484L;
 
 		@NotNull
 		@Override
 		public Key opposite() {
 			return Tetragon.BOTTOM;
+		}
+
+		@NotNull
+		@Override
+		public String toString() {
+			return "TOP";
+		}
+	};
+	/**
+	 * The side at the end of the tetragon. (Y-)
+	 *
+	 * @since 0.0.2 ~2021.04.28
+	 */
+	@NotNull
+	Tetragon BOTTOM = new Tetragon() {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 4951271688223864399L;
+
+		@NotNull
+		@Override
+		public Key opposite() {
+			return Tetragon.TOP;
+		}
+
+		@NotNull
+		@Override
+		public String toString() {
+			return "BOTTOM";
 		}
 	};
 }

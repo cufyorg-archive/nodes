@@ -18,6 +18,8 @@ package cufy.util.polygon;
 import cufy.util.Node.Key;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * The sides of a digon.
  *
@@ -26,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 0.0.2 ~2021.04.28
  */
 @SuppressWarnings("InterfaceMayBeAnnotatedFunctional")
-public interface Digon extends Key {
+public interface Digon extends Key, Serializable {
 	/**
 	 * The side at the start of the digon. (X-)
 	 *
@@ -34,16 +36,19 @@ public interface Digon extends Key {
 	 */
 	@NotNull
 	Digon START = new Digon() {
-		@NotNull
-		@Override
-		public String toString() {
-			return "START";
-		}
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -4182475862803837047L;
 
 		@NotNull
 		@Override
 		public Key opposite() {
 			return Digon.END;
+		}
+
+		@NotNull
+		@Override
+		public String toString() {
+			return "START";
 		}
 	};
 	/**
@@ -53,16 +58,19 @@ public interface Digon extends Key {
 	 */
 	@NotNull
 	Digon END = new Digon() {
-		@NotNull
-		@Override
-		public String toString() {
-			return "END";
-		}
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 7728357571108058781L;
 
 		@NotNull
 		@Override
 		public Key opposite() {
 			return Digon.START;
+		}
+
+		@NotNull
+		@Override
+		public String toString() {
+			return "END";
 		}
 	};
 }

@@ -18,6 +18,7 @@ package cufy.util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -420,7 +421,10 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * @version 0.0.1
 	 * @since 0.0.1 ~2021.04.22
 	 */
-	public static class SimpleKey implements Key {
+	public static class SimpleKey implements Key, Serializable {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 2334516389085542258L;
+
 		/**
 		 * The opposite key of this key.
 		 *
@@ -538,7 +542,10 @@ public abstract class AbstractNode<V> implements Node<V> {
 	 * @version 0.0.1
 	 * @since 0.0.1 ~2021.04.18
 	 */
-	public static class SimpleLink<V> implements Link<V> {
+	public static class SimpleLink<V> implements Link<V>, Serializable {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -3772698734748896812L;
+
 		/**
 		 * The key of this link.
 		 *

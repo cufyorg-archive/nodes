@@ -17,6 +17,7 @@ package cufy.util.polygon;
 
 import cufy.util.Node.Key;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The sides of a tetragon.
@@ -36,6 +37,14 @@ public interface Tetragon extends Digon {
 	Tetragon TOP = new Tetragon() {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -990754514165955484L;
+
+		@Override
+		public boolean equals(@Nullable Object object) {
+			return object == this ||
+				   object instanceof Digon &&
+				   object.toString().equals(this.toString());
+		}
+
 
 		@NotNull
 		@Override
@@ -58,6 +67,13 @@ public interface Tetragon extends Digon {
 	Tetragon BOTTOM = new Tetragon() {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 4951271688223864399L;
+
+		@Override
+		public boolean equals(@Nullable Object object) {
+			return object == this ||
+				   object instanceof Digon &&
+				   object.toString().equals(this.toString());
+		}
 
 		@NotNull
 		@Override

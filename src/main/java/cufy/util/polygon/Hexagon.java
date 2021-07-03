@@ -17,6 +17,7 @@ package cufy.util.polygon;
 
 import cufy.util.Node.Key;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The sides of a hexagon.
@@ -28,28 +29,6 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("InterfaceMayBeAnnotatedFunctional")
 public interface Hexagon extends Tetragon {
 	/**
-	 * The side at the back of the hexagon. (Z-)
-	 *
-	 * @since 0.0.2 ~2021.04.28
-	 */
-	@NotNull
-	Hexagon BACK = new Hexagon() {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 8987665102672994394L;
-
-		@NotNull
-		@Override
-		public String toString() {
-			return "BACK";
-		}
-
-		@NotNull
-		@Override
-		public Key opposite() {
-			return Hexagon.FRONT;
-		}
-	};
-	/**
 	 * The side at the front of the hexagon. (Z+)
 	 *
 	 * @since 0.0.2 ~2021.04.28
@@ -59,16 +38,52 @@ public interface Hexagon extends Tetragon {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -6360589989047071325L;
 
-		@NotNull
 		@Override
-		public String toString() {
-			return "FRONT";
+		public boolean equals(@Nullable Object object) {
+			return object == this ||
+				   object instanceof Digon &&
+				   object.toString().equals(this.toString());
 		}
 
 		@NotNull
 		@Override
 		public Key opposite() {
 			return Hexagon.BACK;
+		}
+
+		@NotNull
+		@Override
+		public String toString() {
+			return "FRONT";
+		}
+	};
+	/**
+	 * The side at the back of the hexagon. (Z-)
+	 *
+	 * @since 0.0.2 ~2021.04.28
+	 */
+	@NotNull
+	Hexagon BACK = new Hexagon() {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 8987665102672994394L;
+
+		@Override
+		public boolean equals(@Nullable Object object) {
+			return object == this ||
+				   object instanceof Digon &&
+				   object.toString().equals(this.toString());
+		}
+
+		@NotNull
+		@Override
+		public Key opposite() {
+			return Hexagon.FRONT;
+		}
+
+		@NotNull
+		@Override
+		public String toString() {
+			return "BACK";
 		}
 	};
 }

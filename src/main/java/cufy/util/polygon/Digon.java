@@ -17,6 +17,7 @@ package cufy.util.polygon;
 
 import cufy.util.Node.Key;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
@@ -39,6 +40,13 @@ public interface Digon extends Key, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -4182475862803837047L;
 
+		@Override
+		public boolean equals(@Nullable Object object) {
+			return object == this ||
+				   object instanceof Digon &&
+				   object.toString().equals(this.toString());
+		}
+
 		@NotNull
 		@Override
 		public Key opposite() {
@@ -60,6 +68,13 @@ public interface Digon extends Key, Serializable {
 	Digon END = new Digon() {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 7728357571108058781L;
+
+		@Override
+		public boolean equals(@Nullable Object object) {
+			return object == this ||
+				   object instanceof Digon &&
+				   object.toString().equals(this.toString());
+		}
 
 		@NotNull
 		@Override
